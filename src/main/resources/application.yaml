@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/rcp-hr
+    username: postgres
+    password: admin1234
+    driverClassName: org.postgresql.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      dll-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+    generate-ddl: true
+server:
+  port: 8082
