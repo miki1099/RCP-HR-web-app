@@ -1,12 +1,14 @@
-package pl.uginf.rcphrwebapp.hr.user;
+package pl.uginf.rcphrwebapp.hr.user.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pl.uginf.rcphrwebapp.hr.workinfo.WorkInfo;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "PERSONS")
@@ -17,11 +19,11 @@ import java.util.Date;
 public class User {
 
     @Id
-    @Column(name = "PESEL", nullable = false, unique = true)
-    private String pesel;
-
     @Column(name = "USERNAME", unique = true, nullable = false)
     private String username;
+
+    @Column(name = "PESEL", nullable = false, unique = true)
+    private String pesel;
 
     @Column(name = "PASSWORD", nullable = false)
     private String password;
@@ -51,4 +53,6 @@ public class User {
     @Column(name = "IS_ACTIVE", nullable = false)
     private boolean isActive;
 
+    @OneToMany(mappedBy = "userId")
+    private List<WorkInfo> workInfos;
 }

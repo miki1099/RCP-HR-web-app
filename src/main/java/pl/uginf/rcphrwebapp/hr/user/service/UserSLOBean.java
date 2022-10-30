@@ -6,13 +6,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.uginf.rcphrwebapp.exceptions.UserNotFoundException;
 import pl.uginf.rcphrwebapp.exceptions.ValidationException;
-import pl.uginf.rcphrwebapp.hr.user.User;
 import pl.uginf.rcphrwebapp.hr.user.UserRepository;
 import pl.uginf.rcphrwebapp.hr.user.UserValidator;
 import pl.uginf.rcphrwebapp.hr.user.dto.UserDto;
+import pl.uginf.rcphrwebapp.hr.user.model.User;
+import pl.uginf.rcphrwebapp.hr.workinfo.WorkInfo;
+import pl.uginf.rcphrwebapp.hr.workinfo.WorkInfoDto;
+import pl.uginf.rcphrwebapp.hr.workinfo.WorkInfoRepository;
+import pl.uginf.rcphrwebapp.hr.workinfo.WorkInfoValidator;
 
-import java.text.ParseException;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static pl.uginf.rcphrwebapp.utils.MsgCodes.NOT_UNIQUE;
 
@@ -22,12 +27,16 @@ public class UserSLOBean implements UserSLO {
 
     private final UserValidator userValidator;
 
+    private final WorkInfoValidator workInfoValidator;
+
     private final UserRepository userRepository;
+
+    private final WorkInfoRepository workInfoRepository;
 
     private final ModelMapper modelMapper;
 
     @Override
-    public UserDto addUser(UserDto userDto) throws ParseException {
+    public UserDto addUser(UserDto userDto) {
         userValidator.validate(userDto);
         checkIfUserExists(userDto);
         User userToSave = modelMapper.map(userDto, User.class);
@@ -37,11 +46,44 @@ public class UserSLOBean implements UserSLO {
 
     @Override
     public UserDto getUserByUsername(String username) {
+        User user = findByUsername(username);
+        return modelMapper.map(user, UserDto.class);
+    }
+
+    @Override
+    public List<WorkInfoDto> getWorkInfosForUser(String username) {
+        checkUserExistence(username);
+        List<WorkInfo> allByUserId_username = workInfoRepository.findAllByUserId_Username(username);
+
+        return allByUserId_username
+                .stream()
+                .map(workInfo -> {
+                    WorkInfoDto workInfoDto = modelMapper.map(workInfo, WorkInfoDto.class);
+                    workInfoDto.setUsername(workInfo.getUserId().getUsername());
+                    return workInfoDto;
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public WorkInfoDto addWorkInfo(WorkInfoDto workInfoDto) {
+        User user = findByUsername(workInfoDto.getUsername());
+        workInfoValidator.validate(workInfoDto);
+        WorkInfo workInfo = modelMapper.map(workInfoDto, WorkInfo.class);
+        workInfo.setUserId(user);
+        workInfoRepository.save(workInfo);
+        return workInfoDto;
+    }
+
+    private User findByUsername(String username) {
         Optional<User> userDB = userRepository.getUserByUsername(username);
-        if (userDB.isPresent()) {
-            return modelMapper.map(userDB.get(), UserDto.class);
-        } else
+        return userDB.orElseThrow(() -> new UserNotFoundException(username));
+    }
+
+    private void checkUserExistence(String username) {
+        if (!userRepository.existsByUsername(username)) {
             throw new UserNotFoundException(username);
+        }
     }
 
     private void checkIfUserExists(UserDto userDto) {

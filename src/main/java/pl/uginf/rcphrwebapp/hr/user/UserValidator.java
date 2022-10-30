@@ -9,6 +9,7 @@ import pl.uginf.rcphrwebapp.exceptions.ValidationException;
 import pl.uginf.rcphrwebapp.hr.user.dto.AddressDto;
 import pl.uginf.rcphrwebapp.hr.user.dto.UserDto;
 import pl.uginf.rcphrwebapp.utils.MsgCodes;
+import pl.uginf.rcphrwebapp.validator.Validator;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ import java.util.Date;
 import java.util.List;
 
 @Component
-public class UserValidator {
+public class UserValidator implements Validator<UserDto> {
 
     public static final String DATE_PATTERN = "yyyy-MM-dd";
 
@@ -26,6 +27,7 @@ public class UserValidator {
 
     private static final String LASTNAME_REGEX = "[A-ZŻŹĆĄŚĘŁÓŃ]'?[A-Z]?[a-zżźćńółęąś]*-?[A-ZŻŹĆĄŚĘŁÓŃ]?'?[A-Z]?[a-zżźćńółęąś]*";
 
+    @Override
     public void validate(UserDto userDto) throws ValidationException {
         List<String> errors = new ArrayList<>();
         firstNameCheck(userDto.getFirstName(), errors);

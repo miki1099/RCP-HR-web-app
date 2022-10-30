@@ -1,4 +1,4 @@
-package pl.uginf.rcphrwebapp.hr.user;
+package pl.uginf.rcphrwebapp.hr.user.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
