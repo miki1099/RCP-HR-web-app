@@ -1,4 +1,4 @@
-package pl.uginf.rcphrwebapp.hr.user;
+package pl.uginf.rcphrwebapp.hr.user.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import pl.uginf.rcphrwebapp.hr.user.dto.UserDto;
 import pl.uginf.rcphrwebapp.hr.user.service.UserSLO;
 
-import javax.validation.Valid;
 import java.text.ParseException;
 
 @RestController
@@ -23,7 +22,7 @@ public class UserController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/hr/create-user")
-    public UserDto create(@Valid @RequestBody UserDto user) throws ParseException {
+    public UserDto create(@RequestBody UserDto user) throws ParseException {
         return userSLO.addUser(user);
     }
 }

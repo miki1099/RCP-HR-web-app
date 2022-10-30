@@ -53,7 +53,7 @@ class UserValidatorTest {
                 , "Postal code can not be empty"
                 , "Invalid pesel"
                 , "Password is too short"
-                , "Date 0099-06-15 is not match to PESEL").toList();
+                , "Date 0099-06-15 does not match PESEL beginning 999999").toList();
 
         return String.join(System.lineSeparator(), expectErrorMsgList);
     }

@@ -2,15 +2,15 @@ package pl.uginf.rcphrwebapp.hr.user.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
+@Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Builder
 public class UserDto {
     private String pesel;
 

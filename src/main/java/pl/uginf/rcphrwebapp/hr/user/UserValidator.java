@@ -10,7 +10,6 @@ import pl.uginf.rcphrwebapp.hr.user.dto.AddressDto;
 import pl.uginf.rcphrwebapp.hr.user.dto.UserDto;
 import pl.uginf.rcphrwebapp.utils.MsgCodes;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,12 +19,14 @@ import java.util.List;
 public class UserValidator {
 
     public static final String DATE_PATTERN = "yyyy-MM-dd";
-    @SuppressWarnings("FieldCanBeLocal")
-    private final String FIRSTNAME_REGEX = "[A-ZŻŹĆĄŚĘŁÓŃ][a-zżźćńółęąś]+";
-    @SuppressWarnings("FieldCanBeLocal")
-    private final String LASTNAME_REGEX = "[A-ZŻŹĆĄŚĘŁÓŃ]'?[A-Z]?[a-zżźćńółęąś]*-?[A-ZŻŹĆĄŚĘŁÓŃ]?'?[A-Z]?[a-zżźćńółęąś]*";
 
-    public void validate(UserDto userDto) throws ValidationException, ParseException {
+    public static final String PESEL_DATE_PATTERN = "yyyyMMdd";
+
+    private static final String FIRSTNAME_REGEX = "[A-ZŻŹĆĄŚĘŁÓŃ][a-zżźćńółęąś]+";
+
+    private static final String LASTNAME_REGEX = "[A-ZŻŹĆĄŚĘŁÓŃ]'?[A-Z]?[a-zżźćńółęąś]*-?[A-ZŻŹĆĄŚĘŁÓŃ]?'?[A-Z]?[a-zżźćńółęąś]*";
+
+    public void validate(UserDto userDto) throws ValidationException {
         List<String> errors = new ArrayList<>();
         firstNameCheck(userDto.getFirstName(), errors);
         lastNameCheck(userDto.getLastName(), errors);
@@ -93,44 +94,41 @@ public class UserValidator {
         }
     }
 
-    private void validateBirthDate(Date date, String pesel, List<String> errors) throws ParseException {
-        Date peselDate = getDateFromPesel(pesel);
-        if (date.compareTo(peselDate) != 0) {
-            String formattedDate = new SimpleDateFormat(DATE_PATTERN).format(date.getTime());
-            errors.add(MsgCodes.BIRTH_DATE_NOT_MATCH_PESEL.getMsg(formattedDate));
+    private void validateBirthDate(Date birthDate, String pesel, List<String> errors) {
+        String peselBirthPart = pesel.substring(0, 6);
+        String peselBirthDate = getStringDateFromPesel(peselBirthPart);
+        String birthDateString = getDateString(birthDate);
+
+
+        if (!peselBirthDate.equals(birthDateString)) {
+            String formattedDate = new SimpleDateFormat(DATE_PATTERN).format(birthDate.getTime());
+            errors.add(MsgCodes.BIRTH_DATE_NOT_MATCH_PESEL.getMsg(formattedDate, peselBirthPart));
         }
     }
 
-    private Date getDateFromPesel(String pesel) throws ParseException {
-        String day = pesel.substring(4, 6);
-        String month = getMonth(pesel.substring(2, 4));
-        String year = getYear(pesel.substring(0, 4));
-        String stringDate = year + "-" + month + "-" + day;
-        return new SimpleDateFormat(DATE_PATTERN).parse(stringDate);
+    private String getDateString(Date birthDate) {
+        return new SimpleDateFormat(PESEL_DATE_PATTERN).format(birthDate.getTime());
     }
 
-    private String getYear(String peselYearAndMonth) {
-        StringBuilder twoNumberYear = new StringBuilder(peselYearAndMonth.substring(0, 2));
-        StringBuilder peselMonth = new StringBuilder(peselYearAndMonth.substring(2, 4));
-
-        if (peselMonth.charAt(0) == '0' || (peselMonth.charAt(0) == '1')) {
-            return twoNumberYear.insert(0, "19").toString();
-        } else if (peselMonth.charAt(0) == '2' || (peselMonth.charAt(0) == '3')) {
-            return twoNumberYear.insert(0, "20").toString();
-        } else
-            return twoNumberYear.insert(0, "18").toString();
-    }
-
-    private String getMonth(String peselMonth) {
-        if (peselMonth.charAt(0) == '0' || (peselMonth.charAt(0) == '1')) {
-            return peselMonth;
-        } else if (peselMonth.charAt(0) == '2' || (peselMonth.charAt(0) == '8')) {
-            return "0" + peselMonth.charAt(1);
-        } else {
-            return "1" + peselMonth.charAt(1);
+    private String getStringDateFromPesel(String pesel) {
+        char monthFirstNumber = pesel.charAt(2);
+        int yearStart = 19;
+        char monthFirstNumberToReplace = 0;
+        switch (monthFirstNumber) {
+            case '2', '3' -> yearStart = 20;
+            case '4', '5' -> yearStart = 21;
+            case '6', '7' -> yearStart = 22;
         }
-    }
+        switch (monthFirstNumber) {
+            case '2', '4', '6' -> monthFirstNumberToReplace = '0';
+            case '3', '5', '7' -> monthFirstNumberToReplace = '1';
+        }
 
+        StringBuilder peselBuilder = new StringBuilder(pesel);
+        if (yearStart != 19) {
+            peselBuilder.setCharAt(2, monthFirstNumberToReplace);
+        }
+        peselBuilder.insert(0, yearStart);
+        return peselBuilder.toString();
+    }
 }
-//TODO use return or revert if
-//TODO simplify date validate?

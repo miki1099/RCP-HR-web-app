@@ -44,7 +44,7 @@ public class User {
     @Column(name = "BIRTH_DATE")
     private Date birthDate;
 
-    @OneToOne(cascade = {CascadeType.ALL})
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "ADDRESS", referencedColumnName = "ID")
     private Address address;
 
