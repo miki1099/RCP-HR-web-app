@@ -1,4 +1,4 @@
-package pl.uginf.rcphrwebapp.hr;
+package pl.uginf.rcphrwebapp.exceptions;
 
 import java.util.List;
 

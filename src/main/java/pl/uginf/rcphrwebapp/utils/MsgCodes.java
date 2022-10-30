@@ -8,7 +8,10 @@ public enum MsgCodes {
 
     ERROR_EMPTY("{0} can not be empty"),
     INVALID("Invalid {0}"),
-    NOT_UNIQUE("{0} is not unique");
+    NOT_UNIQUE("{0} is not unique"),
+    BIRTH_DATE_NOT_MATCH_PESEL("Date {0} is not match to PESEL"),
+    USER_NOT_FOUND("User with username {0} is not found."),
+    INCORRECT_DATE_VALUE("Incorrect date.");
 
     private final String message;
 

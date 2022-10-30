@@ -41,10 +41,10 @@ public class User {
     @Column(name = "HIRE_DATE")
     private Date hireDate;
 
-    @Column(name = "BIRTHDAY_DATE")
-    private Date birthdayDate;
+    @Column(name = "BIRTH_DATE")
+    private Date birthDate;
 
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "ADDRESS", referencedColumnName = "ID")
     private Address address;
 
