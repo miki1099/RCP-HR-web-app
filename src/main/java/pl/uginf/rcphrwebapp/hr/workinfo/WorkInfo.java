@@ -1,13 +1,21 @@
 package pl.uginf.rcphrwebapp.hr.workinfo;
 
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.uginf.rcphrwebapp.hr.user.model.User;
-
-import javax.persistence.*;
-import java.util.Date;
 
 @Entity
 @Table(name = "WORK_INFO")
@@ -25,7 +33,7 @@ public class WorkInfo {
     private Date from;
 
     @Column(name = "INFO_END")
-    private Date TO;
+    private Date to;
 
     @Column(name = "CONTRACT_TYPE", nullable = false)
     private String contractType;
