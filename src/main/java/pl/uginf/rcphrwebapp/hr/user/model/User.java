@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.uginf.rcphrwebapp.hr.workinfo.WorkInfo;
+import pl.uginf.rcphrwebapp.rcp.worklog.model.WorkLog;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -55,4 +56,7 @@ public class User {
 
     @OneToMany(mappedBy = "userId")
     private List<WorkInfo> workInfos;
+
+    @OneToMany(mappedBy = "user")
+    private List<WorkLog> workLogs;
 }

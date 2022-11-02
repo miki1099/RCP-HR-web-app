@@ -48,7 +48,7 @@ class WorkInfoValidatorTest {
         User user = new User();
 
         //when
-        when(userRepository.getUserByUsername(any())).thenReturn(Optional.of(user));
+        when(userRepository.findUserByUsername(any())).thenReturn(Optional.of(user));
         when(workInfoRepository.getAllByConflictContractDateAndUserId(any(), any(), any())).thenReturn(new ArrayList<>());
         workInfoValidator.validate(workInfoDto);
 
@@ -63,7 +63,7 @@ class WorkInfoValidatorTest {
         WorkInfo workInfo = new WorkInfo();
 
         //when
-        when(userRepository.getUserByUsername(any())).thenReturn((Optional.of(new User())));
+        when(userRepository.findUserByUsername(any())).thenReturn((Optional.of(new User())));
         when(workInfoRepository.getAllByConflictContractDateAndUserId(any(), any(), any())).thenReturn(List.of(workInfo));
         ValidationException error = Assertions.assertThrows(ValidationException.class, () -> workInfoValidator.validate(workInfoDto));
 
@@ -77,7 +77,7 @@ class WorkInfoValidatorTest {
         WorkInfoDto workInfoDto = createWorkInfoDtoForTest();
 
         //when
-        when(userRepository.getUserByUsername(any())).thenReturn((Optional.empty()));
+        when(userRepository.findUserByUsername(any())).thenReturn((Optional.empty()));
         ValidationException error = Assertions.assertThrows(ValidationException.class, () -> workInfoValidator.validate(workInfoDto));
 
         //then

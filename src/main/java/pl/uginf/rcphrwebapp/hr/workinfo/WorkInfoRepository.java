@@ -16,5 +16,4 @@ public interface WorkInfoRepository extends JpaRepository<WorkInfo, Long> {
 
     @Query("SELECT w FROM WorkInfo w WHERE ((w.from BETWEEN ?1 AND ?2) OR (w.to BETWEEN ?1 AND ?2)) AND w.userId = ?3")
     List<WorkInfo> getAllByConflictContractDateAndUserId(Date from, Date to, User userId);
-    //TODO Maybe change query to method
 }

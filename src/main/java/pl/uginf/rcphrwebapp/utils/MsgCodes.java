@@ -12,8 +12,12 @@ public enum MsgCodes {
     NOT_UNIQUE("{0} is not unique"),
     BIRTH_DATE_NOT_MATCH_PESEL("Date {0} does not match PESEL beginning {1}"),
     USER_NOT_FOUND("User with username {0} is not found."),
+    NOT_FOUND("{0} not found."),
     CONFLICT_CONTRACT_DATE("There is already an agreement in the given timeframe for this user."),
-    INCORRECT_DATE_VALUE("Incorrect {0} date.");
+    INCORRECT_DATE_VALUE("Incorrect {0} date."),
+    WORK_LOG_STARTED("There is active work for user {0}, please stop current work to start new one."),
+    WORK_LOG_NOT_STARTED("There is not any started work for user {0}"),
+    BEFORE_ERROR("{0} can not be before {1}");
 
     private final String message;
 

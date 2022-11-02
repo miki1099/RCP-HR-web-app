@@ -45,7 +45,7 @@ public class WorkInfoValidator implements Validator<WorkInfoDto> {
     }
 
     private void ifUserHasConflictDateWithOtherContract(Date from, Date to, String username, List<String> errors) {
-        Optional<User> user = userRepository.getUserByUsername(username);
+        Optional<User> user = userRepository.findUserByUsername(username);
         if ( user.isEmpty() ) {
             errors.add(MsgCodes.USER_NOT_FOUND.getMsg(username));
             return;
