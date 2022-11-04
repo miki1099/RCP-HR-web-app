@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -52,6 +54,7 @@ public class WorkLogServiceBean implements WorkLogService {
     }
 
     @Override
+    @Transactional
     public WorkLogRecord endWork(String username) {
         userSLO.getUserByUsername(username);
         WorkLog workLogStarted = getWorkLogWithCustomExceptionMsg(WORK_LOG_NOT_STARTED, username);
@@ -86,11 +89,13 @@ public class WorkLogServiceBean implements WorkLogService {
     }
 
     @Override
+    @Transactional
     public WorkLogRecord approveRecord(ApproveWorkLogRecord approveWorkLogRecord) {
         long workLogId = approveWorkLogRecord.workLogId();
         WorkLog workLog = workLogRepository.findById(workLogId)
                 .orElseThrow(() -> new NotFoundException("WorkLog with id " + workLogId));
         workLog.setApproved(true);
+        workLogRepository.save(workLog);
         return WorkLogRecordAssembler.assembleRecord(workLog);
     }
 

@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,8 +22,8 @@ public class HrController {
     UserSLO userSLO;
 
     @ResponseStatus(HttpStatus.OK)
-    @PutMapping(value = "/deactivate-user")
-    public void deactivateUser(@RequestBody String username) {
+    @PostMapping(value = "/deactivate-user")
+    public void deactivateUser(@RequestParam("user") String username) {
         userSLO.deactivateUser(username);
     }
 

@@ -74,6 +74,7 @@ public class UserSLOBean implements UserSLO {
     }
 
     @Override
+    @Transactional
     public WorkInfoDto addWorkInfo(WorkInfoDto workInfoDto) {
         workInfoValidator.validate(workInfoDto);
         WorkInfo workInfo = modelMapper.map(workInfoDto, WorkInfo.class);
