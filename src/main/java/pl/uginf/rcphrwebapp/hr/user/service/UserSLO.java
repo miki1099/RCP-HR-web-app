@@ -17,4 +17,6 @@ public interface UserSLO {
     List<WorkInfoDto> getWorkInfosForUser(String username);
 
     WorkInfoDto addWorkInfo(WorkInfoDto workInfoDto);
+
+    void deactivateUser(String username);
 }

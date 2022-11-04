@@ -2,9 +2,12 @@ package pl.uginf.rcphrwebapp.hr.user.service;
 
 import static pl.uginf.rcphrwebapp.utils.MsgCodes.NOT_UNIQUE;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import javax.transaction.Transactional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,6 +83,21 @@ public class UserSLOBean implements UserSLO {
         return workInfoDto;
     }
 
+    @Override
+    @Transactional
+    public void deactivateUser(String username) {
+        User userToDeactivate = getByUsername(username);
+        userToDeactivate.setActive(false);
+        List<WorkInfo> workInfos = userToDeactivate.getWorkInfos();
+        for (WorkInfo workInfo : workInfos) {
+            if ( workInfo.getTo() == null ) {
+                workInfo.setTo(new Date());
+                break;
+            }
+        }
+        userRepository.save(userToDeactivate);
+    }
+
     private User getByUsername(String username) {
         Optional<User> userDB = userRepository.findUserByUsername(username);
         return userDB.orElseThrow(() -> new UserNotFoundException(username));
@@ -100,6 +118,7 @@ public class UserSLOBean implements UserSLO {
         }
         if ( userRepository.existsByUsername(userDto.getUsername()) ) {
             throw new ValidationException(NOT_UNIQUE.getMsg("Username"));
-        }
+        } //TODO Maybe give possibility for activate again for old-new employee
     }
 }
+//TODO transition user to manager or delete and create new one
