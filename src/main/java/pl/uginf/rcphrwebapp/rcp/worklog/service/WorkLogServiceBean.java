@@ -3,6 +3,7 @@ package pl.uginf.rcphrwebapp.rcp.worklog.service;
 import static pl.uginf.rcphrwebapp.utils.MsgCodes.WORK_LOG_NOT_STARTED;
 import static pl.uginf.rcphrwebapp.utils.MsgCodes.WORK_LOG_STARTED;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -81,8 +82,7 @@ public class WorkLogServiceBean implements WorkLogService {
     public List<WorkLogRecord> getAllForUserBetween(WorkLogBetween workLogBetween) {
         String username = workLogBetween.username();
         userSLO.getUserByUsername(username);
-        List<WorkLog> workLogs = workLogRepository.findByToAfterAndFromBeforeAndUser_UsernameOrderByFromAsc(workLogBetween.to(), workLogBetween.from(),
-                username);
+        List<WorkLog> workLogs = workLogRepository.findAllByBetweenFromAndToAndUserId(workLogBetween.from(), workLogBetween.to(), username);
         return workLogs.stream()
                 .map(WorkLogRecordAssembler::assembleRecord)
                 .collect(Collectors.toList());
@@ -90,13 +90,17 @@ public class WorkLogServiceBean implements WorkLogService {
 
     @Override
     @Transactional
-    public WorkLogRecord approveRecord(ApproveWorkLogRecord approveWorkLogRecord) {
-        long workLogId = approveWorkLogRecord.workLogId();
-        WorkLog workLog = workLogRepository.findById(workLogId)
-                .orElseThrow(() -> new NotFoundException("WorkLog with id " + workLogId));
-        workLog.setApproved(true);
-        workLogRepository.save(workLog);
-        return WorkLogRecordAssembler.assembleRecord(workLog);
+    public List<WorkLogRecord> approveRecord(List<ApproveWorkLogRecord> approveWorkLogRecordList) {
+        List<WorkLogRecord> workLogRecordList = new ArrayList<>();
+        for (ApproveWorkLogRecord approveWorkLogRecord : approveWorkLogRecordList) {
+            long workLogId = approveWorkLogRecord.workLogId();
+            WorkLog workLog = workLogRepository.findById(workLogId)
+                    .orElseThrow(() -> new NotFoundException("WorkLog with id " + workLogId));
+            workLog.setApproved(true);
+            workLogRepository.save(workLog);
+            workLogRecordList.add(WorkLogRecordAssembler.assembleRecord(workLog));
+        }
+        return workLogRecordList;
     }
 
     private WorkLog getWorkLogWithCustomExceptionMsg(MsgCodes exceptionMsg, String username) {

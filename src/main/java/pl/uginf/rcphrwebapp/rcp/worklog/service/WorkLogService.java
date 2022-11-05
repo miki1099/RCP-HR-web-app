@@ -18,5 +18,5 @@ public interface WorkLogService {
 
     List<WorkLogRecord> getAllForUserBetween(WorkLogBetween workLogBetween);
 
-    WorkLogRecord approveRecord(ApproveWorkLogRecord approveWorkLogRecord);
+    List<WorkLogRecord> approveRecord(List<ApproveWorkLogRecord> approveWorkLogRecordList);
 }
