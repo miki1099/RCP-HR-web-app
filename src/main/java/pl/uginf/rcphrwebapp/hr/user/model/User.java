@@ -17,6 +17,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pl.uginf.rcphrwebapp.hr.daysoff.model.DaysOff;
 import pl.uginf.rcphrwebapp.hr.workinfo.WorkInfo;
 import pl.uginf.rcphrwebapp.rcp.worklog.model.WorkLog;
 
@@ -66,6 +67,9 @@ public class User {
     @OneToMany(mappedBy = "userId")
     private List<WorkInfo> workInfos;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user")
     private List<WorkLog> workLogs;
+
+    @OneToMany(mappedBy = "user")
+    private List<DaysOff> daysOffList;
 }

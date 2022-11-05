@@ -2,12 +2,10 @@ package pl.uginf.rcphrwebapp.hr.user.service;
 
 import static pl.uginf.rcphrwebapp.utils.MsgCodes.NOT_UNIQUE;
 
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import javax.transaction.Transactional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +14,12 @@ import org.springframework.stereotype.Service;
 import lombok.AllArgsConstructor;
 import pl.uginf.rcphrwebapp.exceptions.UserNotFoundException;
 import pl.uginf.rcphrwebapp.exceptions.ValidationException;
+import pl.uginf.rcphrwebapp.hr.daysoff.TimeOffRepository;
+import pl.uginf.rcphrwebapp.hr.daysoff.dto.NewTimeOffRecord;
+import pl.uginf.rcphrwebapp.hr.daysoff.dto.TimeOffRecord;
+import pl.uginf.rcphrwebapp.hr.daysoff.dto.assembler.TimeOffAssembler;
+import pl.uginf.rcphrwebapp.hr.daysoff.model.DaysOff;
+import pl.uginf.rcphrwebapp.hr.daysoff.validator.TimeOffValidator;
 import pl.uginf.rcphrwebapp.hr.user.UserRepository;
 import pl.uginf.rcphrwebapp.hr.user.UserValidator;
 import pl.uginf.rcphrwebapp.hr.user.dto.UserDto;
@@ -33,9 +37,13 @@ public class UserSLOBean implements UserSLO {
 
     private final WorkInfoValidator workInfoValidator;
 
+    private final TimeOffValidator timeOffValidator;
+
     private final UserRepository userRepository;
 
     private final WorkInfoRepository workInfoRepository;
+
+    private final TimeOffRepository timeOffRepository;
 
     private final ModelMapper modelMapper;
 
@@ -74,7 +82,6 @@ public class UserSLOBean implements UserSLO {
     }
 
     @Override
-    @Transactional
     public WorkInfoDto addWorkInfo(WorkInfoDto workInfoDto) {
         workInfoValidator.validate(workInfoDto);
         WorkInfo workInfo = modelMapper.map(workInfoDto, WorkInfo.class);
@@ -85,18 +92,49 @@ public class UserSLOBean implements UserSLO {
     }
 
     @Override
-    @Transactional
     public void deactivateUser(String username) {
         User userToDeactivate = getByUsername(username);
         userToDeactivate.setActive(false);
         List<WorkInfo> workInfos = userToDeactivate.getWorkInfos();
         for (WorkInfo workInfo : workInfos) {
             if ( workInfo.getTo() == null ) {
-                workInfo.setTo(new Date());
+                workInfo.setTo(new Date(new java.util.Date().getTime()));
                 break;
             }
         }
         userRepository.save(userToDeactivate);
+    }
+
+    @Override
+    public TimeOffRecord addDaysOffForUser(NewTimeOffRecord newTimeOff) {
+        User userDb = getUserByUsername(newTimeOff.username());
+        timeOffValidator.validate(newTimeOff);
+        DaysOff daysOff = new DaysOff();
+        daysOff.setUser(userDb);
+        daysOff.setType(newTimeOff.type());
+        daysOff.setApproved(false);
+        daysOff.setStartDate(newTimeOff.startDate());
+        daysOff.setEndDate(newTimeOff.endDate());
+        timeOffRepository.save(daysOff);
+        return TimeOffAssembler.assemble(daysOff);
+    }
+
+    @Override
+    public List<TimeOffRecord> getDaysOffForUserBetween(String username, Date from, Date to) {
+        getUserByUsername(username);
+        List<DaysOff> allForUserAndBetweenPeriod = timeOffRepository.getAllForUserAndBetweenPeriod(username, from, to);
+        return allForUserAndBetweenPeriod.stream()
+                .map(TimeOffAssembler::assemble)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<TimeOffRecord> getNotApprovedDaysOffForUserBetween(String username, Date from) {
+        getUserByUsername(username);
+        List<DaysOff> allNotApprovedForUserAndBetweenPeriod = timeOffRepository.findAllByUser_UsernameAndApprovedIsFalseAndEndDateAfter(username, from);
+        return allNotApprovedForUserAndBetweenPeriod.stream()
+                .map(TimeOffAssembler::assemble)
+                .collect(Collectors.toList());
     }
 
     private User getByUsername(String username) {

@@ -1,9 +1,11 @@
-package pl.uginf.rcphrwebapp.hr.workinfo;
+package pl.uginf.rcphrwebapp.hr.daysoff.model;
 
 import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -21,35 +23,33 @@ import lombok.Setter;
 import pl.uginf.rcphrwebapp.hr.user.model.User;
 
 @Entity
-@Table(name = "WORK_INFO")
-@Getter
-@Setter
+@Table(name = "DAYS_OFF")
 @AllArgsConstructor
 @NoArgsConstructor
-public class WorkInfo {
+@Getter
+@Setter
+public class DaysOff {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @Column(name = "INFO_START", nullable = false)
+    @Column(name = "START_DATE", nullable = false)
     @Temporal(TemporalType.DATE)
-    private Date from;
+    private Date startDate;
 
-    @Column(name = "INFO_END")
+    @Column(name = "END_DATE", nullable = false)
     @Temporal(TemporalType.DATE)
-    private Date to;
+    private Date endDate;
 
-    @Column(name = "CONTRACT_TYPE", nullable = false)
-    private String contractType;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private DayOffType type;
 
-    @Column(name = "JOB_ROLE")
-    private String jobRole;
-
-    @Column(name = "DAILY_WORKING_TIME", nullable = false)
-    private short dailyWorkingTime;
+    @Column(nullable = false)
+    private boolean approved;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID", nullable = false)
-    private User userId;
+    private User user;
 }

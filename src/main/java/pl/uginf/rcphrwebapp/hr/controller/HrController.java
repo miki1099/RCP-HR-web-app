@@ -1,4 +1,4 @@
-package pl.uginf.rcphrwebapp.hr.hr.controller;
+package pl.uginf.rcphrwebapp.hr.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
