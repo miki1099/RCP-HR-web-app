@@ -25,27 +25,27 @@ public class WorkLogController {
 
     WorkLogService workLogService;
 
-    @PutMapping
+    @PutMapping("/startWorkLog")
     public WorkLogStartRecord startWorkLog(@RequestParam String username) {
         return workLogService.startWork(username);
     }
 
-    @PostMapping
+    @PostMapping("/endWorkLog")
     public WorkLogRecord endWorkLog(@RequestParam String username) {
         return workLogService.endWork(username);
     }
 
-    @PutMapping
+    @PutMapping("/createWorkLog")
     public WorkLogRecord createCustomWorkLog(@RequestBody CustomWorkLogRecord customWorkLogRecord) {
         return workLogService.addCustomWorkLog(customWorkLogRecord);
     }
 
-    @PostMapping
+    @PostMapping("/approveWorkLog")
     public List<WorkLogRecord> approveWorkLog(@RequestBody List<ApproveWorkLogRecord> approveWorkLogRecordList) {
         return workLogService.approveRecord(approveWorkLogRecordList);
     }
 
-    @GetMapping
+    @GetMapping("/getWorkLogForUser")
     public List<WorkLogRecord> getWorkLogList(@RequestBody WorkLogBetween workLogBetween) {
         return workLogService.getAllForUserBetween(workLogBetween);
     }
