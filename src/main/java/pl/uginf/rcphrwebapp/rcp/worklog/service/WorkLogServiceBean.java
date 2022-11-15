@@ -82,7 +82,7 @@ public class WorkLogServiceBean implements WorkLogService {
     public List<WorkLogRecord> getAllForUserBetween(WorkLogBetween workLogBetween) {
         String username = workLogBetween.username();
         userSLO.getUserByUsername(username);
-        List<WorkLog> workLogs = workLogRepository.findAllByBetweenFromAndToAndUserId(workLogBetween.from(), workLogBetween.to(), username);
+        List<WorkLog> workLogs = workLogRepository.findAllByBetweenFromAndToAndUserId(username, workLogBetween.from(), workLogBetween.to());
         return workLogs.stream()
                 .map(WorkLogRecordAssembler::assembleRecord)
                 .collect(Collectors.toList());

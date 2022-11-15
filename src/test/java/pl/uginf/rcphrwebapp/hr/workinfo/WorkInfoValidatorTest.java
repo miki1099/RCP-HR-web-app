@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static pl.uginf.rcphrwebapp.hr.user.UserValidator.DATE_PATTERN;
 
+import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -85,10 +86,14 @@ class WorkInfoValidatorTest {
     }
 
     private WorkInfoDto createWorkInfoDtoForTest() throws ParseException {
+        Date fromDate = new Date(new SimpleDateFormat(DATE_PATTERN).parse(FROM_DATE_TEST)
+                .getTime());
+        Date toDate = new Date(new SimpleDateFormat(DATE_PATTERN).parse(TO_DATE_TEST)
+                .getTime());
         return WorkInfoDto.builder()
                 .username("usernameTest")
-                .from(new SimpleDateFormat(DATE_PATTERN).parse(FROM_DATE_TEST))
-                .to(new SimpleDateFormat(DATE_PATTERN).parse(TO_DATE_TEST))
+                .from(fromDate)
+                .to(toDate)
                 .build();
     }
 

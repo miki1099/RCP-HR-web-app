@@ -8,6 +8,7 @@ import pl.uginf.rcphrwebapp.hr.daysoff.dto.TimeOffRecord;
 import pl.uginf.rcphrwebapp.hr.user.dto.UserDto;
 import pl.uginf.rcphrwebapp.hr.user.model.User;
 import pl.uginf.rcphrwebapp.hr.workinfo.WorkInfoDto;
+import pl.uginf.rcphrwebapp.rcp.worklog.model.WorkLog;
 
 public interface UserSLO {
 
@@ -27,5 +28,11 @@ public interface UserSLO {
 
     List<TimeOffRecord> getDaysOffForUserBetween(String username, Date from, Date to);
 
-    List<TimeOffRecord> getNotApprovedDaysOffForUserBetween(String username, Date from);
+    List<TimeOffRecord> getNotApprovedDaysOffForUser(String username);
+
+    List<WorkLog> getWorkLogsForUser(String username, Date from, Date to);
+
+    List<UserDto> getAllTeamMembers(String managerUsername);
+
+    void approveDaysOff(List<Long> daysOffIdList);
 }

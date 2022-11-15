@@ -39,9 +39,9 @@ public class UserController {
         return userSLO.getDaysOffForUserBetween(username, from, to);
     }
 
-    @GetMapping(value = "/{username}/getNotApprovedFrom")
-    public List<TimeOffRecord> getNotApprovedDaysOffAfter(@PathVariable String username, @RequestParam("fromDate") Date from) {
-        return userSLO.getNotApprovedDaysOffForUserBetween(username, from);
+    @GetMapping(value = "/{username}/getNotApproved")
+    public List<TimeOffRecord> getNotApprovedDaysOff(@PathVariable String username) {
+        return userSLO.getNotApprovedDaysOffForUser(username);
     }
 
 }

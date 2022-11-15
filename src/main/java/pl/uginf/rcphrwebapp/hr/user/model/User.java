@@ -64,6 +64,10 @@ public class User {
     @Column(name = "IS_ACTIVE", nullable = false)
     private boolean isActive;
 
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "BOSS", referencedColumnName = "username")
+    private User boss; //TODO reportTo or Boss
+
     @OneToMany(mappedBy = "userId")
     private List<WorkInfo> workInfos;
 

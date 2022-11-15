@@ -16,6 +16,6 @@ public interface WorkLogRepository extends JpaRepository<WorkLog, Long> {
 
     Optional<WorkLog> findByStatusNotNullAndUser_Username(String username);
 
-    @Query("select w from WorkLog w where ((w.from BETWEEN ?1 AND ?2) OR (w.to BETWEEN ?1 AND ?2)) AND w.user.username = ?3")
-    List<WorkLog> findAllByBetweenFromAndToAndUserId(@NonNull Date from, @NonNull Date to, String username);
+    @Query("select w from WorkLog w where ((w.from BETWEEN ?2 AND ?3) OR (w.to BETWEEN ?2 AND ?3)) AND w.user.username = ?1")
+    List<WorkLog> findAllByBetweenFromAndToAndUserId(String username, @NonNull Date to, @NonNull Date from);
 }

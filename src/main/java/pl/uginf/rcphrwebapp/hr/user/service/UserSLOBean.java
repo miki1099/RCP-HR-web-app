@@ -3,6 +3,7 @@ package pl.uginf.rcphrwebapp.hr.user.service;
 import static pl.uginf.rcphrwebapp.utils.MsgCodes.NOT_UNIQUE;
 
 import java.sql.Date;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,6 +29,8 @@ import pl.uginf.rcphrwebapp.hr.workinfo.WorkInfo;
 import pl.uginf.rcphrwebapp.hr.workinfo.WorkInfoDto;
 import pl.uginf.rcphrwebapp.hr.workinfo.WorkInfoRepository;
 import pl.uginf.rcphrwebapp.hr.workinfo.WorkInfoValidator;
+import pl.uginf.rcphrwebapp.rcp.worklog.WorkLogRepository;
+import pl.uginf.rcphrwebapp.rcp.worklog.model.WorkLog;
 
 @AllArgsConstructor(onConstructor_ = @Autowired)
 @Service
@@ -46,6 +49,8 @@ public class UserSLOBean implements UserSLO {
     private final TimeOffRepository timeOffRepository;
 
     private final ModelMapper modelMapper;
+
+    private final WorkLogRepository workLogRepository;
 
     @Override
     public UserDto addUser(UserDto userDto) {
@@ -129,12 +134,37 @@ public class UserSLOBean implements UserSLO {
     }
 
     @Override
-    public List<TimeOffRecord> getNotApprovedDaysOffForUserBetween(String username, Date from) {
+    public List<TimeOffRecord> getNotApprovedDaysOffForUser(String username) {
         getUserByUsername(username);
-        List<DaysOff> allNotApprovedForUserAndBetweenPeriod = timeOffRepository.findAllByUser_UsernameAndApprovedIsFalseAndEndDateAfter(username, from);
-        return allNotApprovedForUserAndBetweenPeriod.stream()
+        List<DaysOff> allNotApprovedForUser = timeOffRepository.findAllByUser_UsernameAndApprovedIsFalse(username);
+        return allNotApprovedForUser.stream()
                 .map(TimeOffAssembler::assemble)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<WorkLog> getWorkLogsForUser(String username, Date from, Date to) {
+        return workLogRepository.findAllByBetweenFromAndToAndUserId(username, from, to);
+    }
+
+    @Override
+    public List<UserDto> getAllTeamMembers(String managerUsername) {
+        Optional<User> userList = userRepository.findAllByBoss_Username(managerUsername);
+        if ( userList.isPresent() )
+            return userList.stream()
+                    .map(user -> modelMapper.map(user, UserDto.class))
+                    .collect(Collectors.toList());
+        else
+            return Collections.emptyList();
+    }
+
+    @Override
+    public void approveDaysOff(List<Long> daysOffIdList) {
+        for (Long daysOffId : daysOffIdList) {
+            DaysOff daysOff = timeOffRepository.getReferenceById(daysOffId);
+            daysOff.setApproved(true);
+            timeOffRepository.save(daysOff);
+        } //TODO return void or approved dayOff or not approved dayOff
     }
 
     private User getByUsername(String username) {
