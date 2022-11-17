@@ -35,4 +35,6 @@ public interface UserSLO {
     List<UserDto> getAllTeamMembers(String managerUsername);
 
     void approveDaysOff(List<Long> daysOffIdList);
+
+    List<UserDto> getAllUsers();
 }

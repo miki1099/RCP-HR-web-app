@@ -30,13 +30,13 @@ public class WorkLogValidator implements Validator<CustomWorkLogRecord> {
         boolean isFromNull = workLogFrom == null;
         boolean isToNull = workLogTo == null;
         if ( isFromNull ) {
-            errors.add(MsgCodes.ERROR_EMPTY.getMsg("Work date from"));
+            errors.add(MsgCodes.ERROR_EMPTY.getMsg("Work date date"));
         }
         if ( isToNull ) {
             errors.add(MsgCodes.ERROR_EMPTY.getMsg("Work date to"));
         }
         if ( !isToNull && !isFromNull && !workLogFrom.before(workLogTo) ) {
-            errors.add(MsgCodes.BEFORE_ERROR.getMsg("Work date to", "Work date from"));
+            errors.add(MsgCodes.BEFORE_ERROR.getMsg("Work date to", "Work date date"));
         }
     }
 }

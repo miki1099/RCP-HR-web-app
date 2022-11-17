@@ -164,7 +164,15 @@ public class UserSLOBean implements UserSLO {
             DaysOff daysOff = timeOffRepository.getReferenceById(daysOffId);
             daysOff.setApproved(true);
             timeOffRepository.save(daysOff);
-        } //TODO return void or approved dayOff or not approved dayOff
+        }
+    }
+
+    @Override
+    public List<UserDto> getAllUsers() {
+        List<User> allUsers = userRepository.findAll();
+        return allUsers.stream()
+                .map(user -> modelMapper.map(user, UserDto.class))
+                .collect(Collectors.toList());
     }
 
     private User getByUsername(String username) {
