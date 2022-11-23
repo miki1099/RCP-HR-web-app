@@ -23,7 +23,7 @@ import com.google.gson.Gson;
 
 import lombok.AllArgsConstructor;
 import pl.uginf.rcphrwebapp.hr.calendar.dto.CalendarEventRecord;
-import pl.uginf.rcphrwebapp.hr.calendar.holiday.externamapimodel.HolidayApiResponse;
+import pl.uginf.rcphrwebapp.hr.calendar.holiday.externalapimodel.HolidayApiResponse;
 
 @Service
 @AllArgsConstructor(onConstructor_ = @Autowired)
