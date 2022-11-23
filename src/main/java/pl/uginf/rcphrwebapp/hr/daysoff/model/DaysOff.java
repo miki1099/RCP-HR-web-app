@@ -1,6 +1,6 @@
 package pl.uginf.rcphrwebapp.hr.daysoff.model;
 
-import java.util.Date;
+import java.sql.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,8 +13,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -35,11 +33,9 @@ public class DaysOff {
     private long id;
 
     @Column(name = "START_DATE", nullable = false)
-    @Temporal(TemporalType.DATE)
     private Date startDate;
 
     @Column(name = "END_DATE", nullable = false)
-    @Temporal(TemporalType.DATE)
     private Date endDate;
 
     @Enumerated(EnumType.STRING)

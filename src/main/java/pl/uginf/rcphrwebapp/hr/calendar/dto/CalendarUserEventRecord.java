@@ -1,7 +1,7 @@
 package pl.uginf.rcphrwebapp.hr.calendar.dto;
 
-import java.util.Date;
+import java.time.LocalDate;
 
-public record CalendarUserEventRecord(String name, Date from, Date to, boolean approved) {
+public record CalendarUserEventRecord(String name, LocalDate from, LocalDate to, boolean approved) {
 
 }

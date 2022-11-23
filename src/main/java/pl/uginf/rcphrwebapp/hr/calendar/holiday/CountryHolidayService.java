@@ -22,9 +22,11 @@ import org.springframework.stereotype.Service;
 import com.google.gson.Gson;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import pl.uginf.rcphrwebapp.hr.calendar.dto.CalendarEventRecord;
 import pl.uginf.rcphrwebapp.hr.calendar.holiday.externalapimodel.HolidayApiResponse;
 
+@Slf4j
 @Service
 @AllArgsConstructor(onConstructor_ = @Autowired)
 public class CountryHolidayService {
@@ -39,6 +41,7 @@ public class CountryHolidayService {
             responseNextYear = getHolidayApiResponse(country, currentYear + 1);
 
         } catch (IOException | InterruptedException e) {
+            log.error("Country holiday api is not available for country {}", country);
             return new HashSet<>();
         }
         Set<CalendarEventRecord> holidays = new HashSet<>(mapOlderThanNowHolidaysResponseToEvents(response));

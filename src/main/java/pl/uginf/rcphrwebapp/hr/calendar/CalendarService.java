@@ -43,8 +43,11 @@ public class CalendarService {
         return daysOffList.stream()
                 .filter(daysOff -> now.before(daysOff.getEndDate()))
                 .filter(daysOff -> yearLater.after(daysOff.getStartDate()))
+                .sorted(Comparator.comparing(DaysOff::getStartDate))
                 .map(daysOff -> new CalendarUserEventRecord(daysOff.getType()
-                        .name(), daysOff.getStartDate(), daysOff.getEndDate(), daysOff.isApproved()))
+                        .getName(), daysOff.getStartDate()
+                        .toLocalDate(), daysOff.getEndDate()
+                        .toLocalDate(), daysOff.isApproved()))
                 .collect(Collectors.toList());
     }
 
