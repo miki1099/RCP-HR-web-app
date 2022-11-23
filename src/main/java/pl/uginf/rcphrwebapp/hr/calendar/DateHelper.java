@@ -1,6 +1,7 @@
 package pl.uginf.rcphrwebapp.hr.calendar;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
@@ -31,5 +32,10 @@ public class DateHelper {
         return date.toInstant()
                 .atZone(ZoneId.systemDefault())
                 .toLocalDate();
+    }
+
+    public static LocalDate getFirstDayOfNextMonth(YearMonth month) {
+        return month.atEndOfMonth()
+                .plusDays(1);
     }
 }

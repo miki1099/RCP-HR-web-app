@@ -1,5 +1,6 @@
 package pl.uginf.rcphrwebapp.hr.workinfo;
 
+import java.math.BigInteger;
 import java.sql.Date;
 
 import lombok.AllArgsConstructor;
@@ -20,6 +21,8 @@ public class WorkInfoDto {
     private String contractType;
 
     private String jobRole;
+
+    private BigInteger hourlyRate;
 
     private short dailyWorkingTime;
 
