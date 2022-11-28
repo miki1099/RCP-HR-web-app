@@ -1,6 +1,6 @@
 package pl.uginf.rcphrwebapp.hr.workinfo;
 
-import java.math.BigInteger;
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -48,7 +48,7 @@ public class WorkInfo {
     private String jobRole;
 
     @Column(name = "HOURLY_RATE")
-    private BigInteger hourlyRate;
+    private BigDecimal hourlyRate;
 
     @Column(name = "DAILY_WORKING_TIME", nullable = false)
     private short dailyWorkingTime;
