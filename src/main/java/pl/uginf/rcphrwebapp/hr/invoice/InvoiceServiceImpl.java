@@ -18,8 +18,8 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
 import pl.uginf.rcphrwebapp.exceptions.InvoiceGenerationException;
@@ -51,7 +51,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     private final InvoiceGenerator invoiceGenerator;
 
     @Override
-    public Resource generateInvoiceForUser(String username, YearMonth monthForInvoice) {
+    public MultipartFile generateInvoiceForUser(String username, YearMonth monthForInvoice) {
         List<WorkInfoDto> workInfosBetween = getWorkInfosForMonth(username, monthForInvoice);
 
         if ( CollectionUtils.isEmpty(workInfosBetween) ) {
@@ -64,7 +64,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         InvoiceInfoRecord invoiceInfoRecord = getInvoiceInfoForUser(username);
         List<ServiceInfo> serviceInfos = createServiceInfo(workInfosBetween, workLogsForUser);
 
-        return invoiceGenerator.generateInvoice(new InvoiceData(invoiceInfoRecord, serviceInfos));
+        return invoiceGenerator.generateInvoice(new InvoiceData(invoiceInfoRecord, serviceInfos), monthForInvoice);
     }
 
     @Override

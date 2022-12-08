@@ -2,13 +2,13 @@ package pl.uginf.rcphrwebapp.hr.invoice;
 
 import java.time.YearMonth;
 
-import org.springframework.core.io.Resource;
+import org.springframework.web.multipart.MultipartFile;
 
 import pl.uginf.rcphrwebapp.hr.invoice.model.InvoiceInfoRecord;
 
 public interface InvoiceService {
 
-    Resource generateInvoiceForUser(String username, YearMonth monthForInvoice);
+    MultipartFile generateInvoiceForUser(String username, YearMonth monthForInvoice);
 
     InvoiceInfoRecord getInvoiceInfoForUser(String username);
 

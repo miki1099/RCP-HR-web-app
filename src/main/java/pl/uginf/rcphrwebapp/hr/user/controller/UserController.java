@@ -1,10 +1,14 @@
 package pl.uginf.rcphrwebapp.hr.user.controller;
 
+import java.io.IOException;
 import java.sql.Date;
 import java.time.YearMonth;
 import java.util.List;
 
-import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -12,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import lombok.AllArgsConstructor;
 import pl.uginf.rcphrwebapp.hr.daysoff.dto.NewTimeOffRecord;
@@ -61,8 +66,13 @@ public class UserController {
     }
 
     @GetMapping(value = "/generateInvoice")
-    public Resource generateResource(@PathVariable String username, @RequestParam("month-year") YearMonth yearMonth) {
-        return invoiceService.generateInvoiceForUser(username, yearMonth);
+    public ResponseEntity<byte[]> generateResource(@PathVariable String username, @RequestParam("month-year") YearMonth yearMonth) throws IOException {
+        MultipartFile invoiceFile = invoiceService.generateInvoiceForUser(username, yearMonth);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        String filename = invoiceFile.getName();
+        headers.setContentDispositionFormData(filename, filename);
+        return new ResponseEntity<>(invoiceFile.getBytes(), headers, HttpStatus.CREATED);
     }
 
 }
