@@ -18,6 +18,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.uginf.rcphrwebapp.hr.daysoff.model.DaysOff;
+import pl.uginf.rcphrwebapp.hr.invoice.model.InvoiceInfo;
 import pl.uginf.rcphrwebapp.hr.workinfo.WorkInfo;
 import pl.uginf.rcphrwebapp.rcp.worklog.model.WorkLog;
 
@@ -61,10 +62,14 @@ public class User {
     @JoinColumn(name = "ADDRESS", referencedColumnName = "ID")
     private Address address;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "INVOICE_INFO", referencedColumnName = "ID")
+    private InvoiceInfo invoiceInfo;
+
     @Column(name = "IS_ACTIVE", nullable = false)
     private boolean isActive;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToOne
     @JoinColumn(name = "BOSS", referencedColumnName = "username")
     private User boss; //TODO reportTo or Boss
 
