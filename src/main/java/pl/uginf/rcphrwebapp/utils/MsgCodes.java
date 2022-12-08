@@ -17,7 +17,8 @@ public enum MsgCodes {
     INCORRECT_DATE_VALUE("Incorrect {0} date."),
     WORK_LOG_STARTED("There is active work for user {0}, please stop current work to start new one."),
     WORK_LOG_NOT_STARTED("There is not any started work for user {0}"),
-    BEFORE_ERROR("{0} can not be before {1}");
+    BEFORE_ERROR("{0} can not be before {1}"),
+    WRONG_FILE_EXTENSION("{0} is not a pdf file");
 
     private final String message;
 
