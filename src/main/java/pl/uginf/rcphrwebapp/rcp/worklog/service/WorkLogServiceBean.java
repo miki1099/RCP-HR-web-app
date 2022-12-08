@@ -49,7 +49,7 @@ public class WorkLogServiceBean implements WorkLogService {
         workLog.setFrom(new Date());
         workLog.setApproved(true);
         workLog.setStatus(WorkLogFlag.NOT_FINISHED);
-        workLog.setUser(user);
+        workLog.setUser(user); //TODO workLogDto and builder then use userDTO?
         workLogRepository.save(workLog);
         return new WorkLogStartRecord(workLog.getFrom(), username);
     }
