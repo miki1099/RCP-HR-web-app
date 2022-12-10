@@ -32,7 +32,7 @@ import pl.uginf.rcphrwebapp.hr.user.UserRepository;
 import pl.uginf.rcphrwebapp.hr.user.dto.AddressDto;
 import pl.uginf.rcphrwebapp.hr.user.model.Address;
 import pl.uginf.rcphrwebapp.hr.user.model.User;
-import pl.uginf.rcphrwebapp.hr.user.service.UserSLO;
+import pl.uginf.rcphrwebapp.hr.user.service.UserService;
 import pl.uginf.rcphrwebapp.hr.workinfo.WorkInfoDto;
 import pl.uginf.rcphrwebapp.rcp.worklog.model.WorkLog;
 
@@ -42,7 +42,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     private final static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM.yyyy");
 
-    private final UserSLO userSLO;
+    private final UserService userService;
 
     private final UserRepository userRepository;
 
@@ -69,7 +69,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
     public InvoiceInfoRecord getInvoiceInfoForUser(String username) {
-        User user = userSLO.getUserByUsername(username);
+        User user = userService.getUserByUsername(username);
         InvoiceInfo invoiceInfo = user.getInvoiceInfo();
         if ( invoiceInfo == null ) {
             return null;
@@ -80,7 +80,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
     public InvoiceInfoRecord setInvoiceInfoForUser(String username, InvoiceInfoRecord invoiceInfoRecord) {
-        User user = userSLO.getUserByUsername(username);
+        User user = userService.getUserByUsername(username);
         InvoiceInfo invoiceInfo = new InvoiceInfo();
         invoiceInfo.setNip(invoiceInfoRecord.nip());
         invoiceInfo.setCompanyName(invoiceInfoRecord.companyName());
@@ -92,7 +92,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
     private List<WorkInfoDto> getWorkInfosForMonth(String username, YearMonth month) {
-        List<WorkInfoDto> workInfos = userSLO.getWorkInfosForUser(username);
+        List<WorkInfoDto> workInfos = userService.getWorkInfosForUser(username);
         LocalDate fromFilter = month.atDay(1);
         LocalDate toFilter = getFirstDayOfNextMonth(month);
         return workInfos.stream()
@@ -106,7 +106,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
     private List<WorkLog> getWorkLogsForMonth(String username, YearMonth month) {
-        return userSLO.getWorkLogsForUser(username, Date.valueOf(month.atDay(1)), Date.valueOf(getFirstDayOfNextMonth(month)));
+        return userService.getWorkLogsForUser(username, Date.valueOf(month.atDay(1)), Date.valueOf(getFirstDayOfNextMonth(month)));
     }
 
     private List<ServiceInfo> createServiceInfo(List<WorkInfoDto> workInfos, List<WorkLog> workLogs) {

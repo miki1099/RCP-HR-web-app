@@ -10,7 +10,7 @@ import pl.uginf.rcphrwebapp.hr.user.model.User;
 import pl.uginf.rcphrwebapp.hr.workinfo.WorkInfoDto;
 import pl.uginf.rcphrwebapp.rcp.worklog.model.WorkLog;
 
-public interface UserSLO {
+public interface UserService {
 
     UserDto addUser(UserDto userDto);
 

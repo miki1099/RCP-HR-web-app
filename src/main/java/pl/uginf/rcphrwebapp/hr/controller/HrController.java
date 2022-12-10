@@ -1,6 +1,7 @@
 package pl.uginf.rcphrwebapp.hr.controller;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -21,7 +22,7 @@ import lombok.AllArgsConstructor;
 import pl.uginf.rcphrwebapp.hr.document.dto.DocumentDTO;
 import pl.uginf.rcphrwebapp.hr.document.service.DocumentService;
 import pl.uginf.rcphrwebapp.hr.user.dto.UserDto;
-import pl.uginf.rcphrwebapp.hr.user.service.UserSLO;
+import pl.uginf.rcphrwebapp.hr.user.service.UserService;
 import pl.uginf.rcphrwebapp.hr.workinfo.WorkInfoDto;
 
 @RestController
@@ -29,23 +30,23 @@ import pl.uginf.rcphrwebapp.hr.workinfo.WorkInfoDto;
 @RequestMapping("/hr/user")
 public class HrController {
 
-    UserSLO userSLO;
+    UserService userService;
 
     DocumentService documentService;
 
     @PostMapping(value = "/deactivate-user")
     public void deactivateUser(@RequestParam("user") String username) {
-        userSLO.deactivateUser(username);
+        userService.deactivateUser(username);
     }
 
     @PutMapping(value = "/create-user")
     public UserDto createUser(@RequestBody UserDto user) {
-        return userSLO.addUser(user);
+        return userService.addUser(user);
     }
 
     @PostMapping(value = "/add-work-info")
     public WorkInfoDto addWorkInfo(@RequestBody WorkInfoDto workInfoDto) {
-        return userSLO.addWorkInfo(workInfoDto);
+        return userService.addWorkInfo(workInfoDto);
     }
 
     @PostMapping(value = "/uploadFile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -66,11 +67,14 @@ public class HrController {
         return new ResponseEntity<>(resource.getData(), headers, HttpStatus.OK);
     }
 
-    @DeleteMapping("/deleteFile/{fileName}")
-    public void deleteFile(@PathVariable String fileName) {
-        documentService.deleteFile(fileName);
+    @DeleteMapping("/deleteFile/{filename}")
+    public void deleteFile(@PathVariable String filename) {
+        documentService.deleteFile(filename);
     }
 
-    //TODO pobieranie nazw plików dla usera
+    @GetMapping("/getFile/{username}")
+    public List<String> getFileForUser(@PathVariable String username) {
+        return documentService.getAllFilenameForUser(username);
+    }
 
 }

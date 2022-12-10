@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,12 +19,13 @@ import lombok.AllArgsConstructor;
 import pl.uginf.rcphrwebapp.exceptions.NotFoundException;
 import pl.uginf.rcphrwebapp.exceptions.ValidationException;
 import pl.uginf.rcphrwebapp.hr.user.model.User;
-import pl.uginf.rcphrwebapp.hr.user.service.UserSLO;
+import pl.uginf.rcphrwebapp.hr.user.service.UserService;
 import pl.uginf.rcphrwebapp.rcp.worklog.WorkLogRepository;
 import pl.uginf.rcphrwebapp.rcp.worklog.WorkLogValidator;
 import pl.uginf.rcphrwebapp.rcp.worklog.dto.ApproveWorkLogRecord;
 import pl.uginf.rcphrwebapp.rcp.worklog.dto.CustomWorkLogRecord;
 import pl.uginf.rcphrwebapp.rcp.worklog.dto.WorkLogBetween;
+import pl.uginf.rcphrwebapp.rcp.worklog.dto.WorkLogDTO;
 import pl.uginf.rcphrwebapp.rcp.worklog.dto.WorkLogRecord;
 import pl.uginf.rcphrwebapp.rcp.worklog.dto.WorkLogStartRecord;
 import pl.uginf.rcphrwebapp.rcp.worklog.dto.assembler.WorkLogRecordAssembler;
@@ -39,25 +41,30 @@ public class WorkLogServiceBean implements WorkLogService {
 
     private final WorkLogValidator workLogValidator;
 
-    private final UserSLO userSLO;
+    private final UserService userService;
+
+    private final ModelMapper modelMapper;
 
     @Override
     public WorkLogStartRecord startWork(String username) {
-        User user = userSLO.getUserByUsername(username);
+        User user = userService.getUserByUsername(username);
         getWorkLogWithCustomExceptionMsg(WORK_LOG_STARTED, username);
-        WorkLog workLog = new WorkLog();
-        workLog.setFrom(new Date());
-        workLog.setApproved(true);
-        workLog.setStatus(WorkLogFlag.NOT_FINISHED);
-        workLog.setUser(user); //TODO workLogDto and builder then use userDTO?
-        workLogRepository.save(workLog);
-        return new WorkLogStartRecord(workLog.getFrom(), username);
+
+        WorkLogDTO workLogDTO = WorkLogDTO.builder()
+                .from(new Date())
+                .isApproved(true)
+                .status(WorkLogFlag.NOT_FINISHED)
+                .user(user)
+                .build();
+
+        workLogRepository.save(modelMapper.map(workLogDTO, WorkLog.class));
+        return new WorkLogStartRecord(workLogDTO.getFrom(), username);
     }
 
     @Override
     @Transactional
     public WorkLogRecord endWork(String username) {
-        userSLO.getUserByUsername(username);
+        userService.getUserByUsername(username);
         WorkLog workLogStarted = getWorkLogWithCustomExceptionMsg(WORK_LOG_NOT_STARTED, username);
         workLogStarted.setTo(new Date());
         workLogStarted.setStatus(null);
@@ -66,7 +73,7 @@ public class WorkLogServiceBean implements WorkLogService {
 
     @Override
     public WorkLogRecord addCustomWorkLog(CustomWorkLogRecord customWorkLog) {
-        User user = userSLO.getUserByUsername(customWorkLog.username());
+        User user = userService.getUserByUsername(customWorkLog.username());
         workLogValidator.validate(customWorkLog);
         WorkLog workLog = new WorkLog();
         workLog.setFrom(customWorkLog.from());
@@ -81,7 +88,7 @@ public class WorkLogServiceBean implements WorkLogService {
     @Override
     public List<WorkLogRecord> getAllForUserBetween(WorkLogBetween workLogBetween) {
         String username = workLogBetween.username();
-        userSLO.getUserByUsername(username);
+        userService.getUserByUsername(username);
         List<WorkLog> workLogs = workLogRepository.findAllByBetweenFromAndToAndUserId(username, workLogBetween.from(), workLogBetween.to());
         return workLogs.stream()
                 .map(WorkLogRecordAssembler::assembleRecord)

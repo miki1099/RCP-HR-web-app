@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.AllArgsConstructor;
 import pl.uginf.rcphrwebapp.hr.daysoff.dto.TimeOffRecord;
 import pl.uginf.rcphrwebapp.hr.user.dto.UserDto;
-import pl.uginf.rcphrwebapp.hr.user.service.UserSLO;
+import pl.uginf.rcphrwebapp.hr.user.service.UserService;
 import pl.uginf.rcphrwebapp.rcp.worklog.model.WorkLog;
 
 @RequestMapping("/hr/manager")
@@ -20,26 +20,26 @@ import pl.uginf.rcphrwebapp.rcp.worklog.model.WorkLog;
 @RestController
 public class ManagerController { //TODO description of front logic: get all team members, choose, get user work log and not approved days off
 
-    UserSLO userSLO;
+    UserService userService;
 
     @GetMapping(value = "/team-members")
     public List<UserDto> getAllTeamMembers(String managerUsername) {
-        return userSLO.getAllTeamMembers(managerUsername);
+        return userService.getAllTeamMembers(managerUsername);
     } //TODO only user or user with work info
 
     @GetMapping(value = "/user-worklog")
     public List<WorkLog> getUserWorkLogBetween(@RequestParam("user") String username, @RequestParam("from") Date from, @RequestParam("to") Date to) {
-        return userSLO.getWorkLogsForUser(username, from, to);
+        return userService.getWorkLogsForUser(username, from, to);
     }
 
     @GetMapping(value = "/not-approved-days-off")
     public List<TimeOffRecord> getNotApprovedDaysOff(@RequestParam("user") String username) {
-        return userSLO.getNotApprovedDaysOffForUser(username);
+        return userService.getNotApprovedDaysOffForUser(username);
     }
 
     @PostMapping(value = "/approve-days-off")
     public void approveDaysOff(@RequestParam("daysOffId") List<Long> daysOffIdList) {
-        userSLO.approveDaysOff(daysOffIdList);
+        userService.approveDaysOff(daysOffIdList);
     } //TODO days off or times off
     //TODO if this should return not approved again?
 }

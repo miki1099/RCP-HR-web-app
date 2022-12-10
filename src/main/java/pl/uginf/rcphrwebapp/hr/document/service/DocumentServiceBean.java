@@ -25,7 +25,7 @@ import pl.uginf.rcphrwebapp.exceptions.WrongFileExtensionException;
 import pl.uginf.rcphrwebapp.hr.document.Document;
 import pl.uginf.rcphrwebapp.hr.document.dto.DocumentDTO;
 import pl.uginf.rcphrwebapp.hr.document.repository.DocumentRepository;
-import pl.uginf.rcphrwebapp.hr.user.service.UserSLO;
+import pl.uginf.rcphrwebapp.hr.user.service.UserService;
 import pl.uginf.rcphrwebapp.utils.MsgCodes;
 
 @AllArgsConstructor(onConstructor_ = @Autowired)
@@ -36,7 +36,7 @@ public class DocumentServiceBean implements DocumentService {
 
     private final DocumentRepository documentRepository;
 
-    private final UserSLO userSLO;
+    private final UserService userService;
 
     public void storeFile(MultipartFile file, String username) throws IOException {
         Document document = createDocument(file, username);
@@ -61,7 +61,7 @@ public class DocumentServiceBean implements DocumentService {
         DocumentDTO documentDTO = DocumentDTO.builder()
                 .filename(file.getOriginalFilename())
                 .data(file.getBytes())
-                .user(userSLO.getUserByUsername(username))
+                .user(userService.getUserByUsername(username))
                 .type(file.getContentType())
                 .build();
         return modelMapper.map(documentDTO, Document.class);
@@ -69,7 +69,7 @@ public class DocumentServiceBean implements DocumentService {
 
     @Transactional
     public DocumentDTO getFile(String filename) {
-        Optional<Document> optionalDocument = documentRepository.findDocumentByFileName(filename);
+        Optional<Document> optionalDocument = documentRepository.findDocumentByFilename(filename);
         if ( optionalDocument.isEmpty() ) {
             throw new NotFoundException(filename);
         }
@@ -78,17 +78,22 @@ public class DocumentServiceBean implements DocumentService {
 
     @Transactional
     public void deleteFile(String fileName) {
-        documentRepository.deleteByFileName(fileName);
+        Optional<Document> document = documentRepository.findDocumentByFilename(fileName);
+        if ( document.isEmpty() ) {
+            throw new NotFoundException(fileName);
+        }
+        documentRepository.delete(document.get());
     }
 
-    public List<String> getAllFileNameForUser(String username) {
-        Optional<Document> optionalDocument = documentRepository.findAllByUser_Username(username);
-        if ( optionalDocument.isEmpty() ) {
+    @Transactional
+    public List<String> getAllFilenameForUser(String username) {
+        List<Document> filenameList = documentRepository.findAllByUser_Username(username);
+        if ( filenameList.isEmpty() ) {
             return Collections.emptyList();
         }
-        return optionalDocument.stream()
-                .map(Document::getFileName)
+        return filenameList.stream()
+                .map(Document::getFilename)
                 .collect(Collectors.toList());
-    } //TODO use in controller
+    }
 
 }

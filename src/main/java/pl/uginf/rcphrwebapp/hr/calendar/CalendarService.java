@@ -23,7 +23,7 @@ import pl.uginf.rcphrwebapp.hr.calendar.holiday.CountryHolidayService;
 import pl.uginf.rcphrwebapp.hr.daysoff.model.DaysOff;
 import pl.uginf.rcphrwebapp.hr.user.dto.UserDto;
 import pl.uginf.rcphrwebapp.hr.user.model.User;
-import pl.uginf.rcphrwebapp.hr.user.service.UserSLO;
+import pl.uginf.rcphrwebapp.hr.user.service.UserService;
 
 @Service
 @AllArgsConstructor(onConstructor_ = @Autowired)
@@ -31,12 +31,12 @@ public class CalendarService {
 
     private final static int YEAR_LATER = 1;
 
-    private final UserSLO userSlo;
+    private final UserService userService;
 
     private final CountryHolidayService countryHolidayService;
 
     public List<CalendarUserEventRecord> getEventsForUser(String username) {
-        User user = userSlo.getUserByUsername(username);
+        User user = userService.getUserByUsername(username);
         List<DaysOff> daysOffList = user.getDaysOffList();
         Date now = new Date();
         Date yearLater = getYearsLater(now, YEAR_LATER);
@@ -52,7 +52,7 @@ public class CalendarService {
     }
 
     public List<CalendarEventRecord> getEventsForAllUsers() {
-        List<UserDto> allUsers = userSlo.getAllUsers();
+        List<UserDto> allUsers = userService.getAllUsers();
         List<CalendarEventRecord> events = new ArrayList<>(getAllUsersBirthday(allUsers));
         events.addAll(getWorkAnniversary(allUsers));
         events.addAll(countryHolidayService.getHolidaysForCountry("PL")); //TODO other countries

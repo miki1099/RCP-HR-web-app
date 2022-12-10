@@ -28,8 +28,8 @@ public class Document {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @Column(name = "FILE_NAME", unique = true, nullable = false) //TODO FILENAME
-    private String fileName;
+    @Column(name = "FILENAME", unique = true, nullable = false)
+    private String filename;
 
     @Column
     private String type;

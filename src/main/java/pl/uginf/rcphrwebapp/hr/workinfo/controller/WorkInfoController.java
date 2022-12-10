@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.AllArgsConstructor;
-import pl.uginf.rcphrwebapp.hr.user.service.UserSLO;
+import pl.uginf.rcphrwebapp.hr.user.service.UserService;
 import pl.uginf.rcphrwebapp.hr.workinfo.WorkInfoDto;
 
 @RestController
@@ -17,10 +17,10 @@ import pl.uginf.rcphrwebapp.hr.workinfo.WorkInfoDto;
 @AllArgsConstructor(onConstructor_ = @Autowired)
 public class WorkInfoController {
 
-    private final UserSLO userSLO;
+    private final UserService userService;
 
     @GetMapping(value = "/getAllForUser/{username}")
     public List<WorkInfoDto> getWorkInfosForUser(@PathVariable String username) {
-        return userSLO.getWorkInfosForUser(username);
+        return userService.getWorkInfosForUser(username);
     }
 }

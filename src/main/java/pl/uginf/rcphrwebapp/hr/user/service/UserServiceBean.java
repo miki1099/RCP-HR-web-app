@@ -34,7 +34,7 @@ import pl.uginf.rcphrwebapp.rcp.worklog.model.WorkLog;
 
 @AllArgsConstructor(onConstructor_ = @Autowired)
 @Service
-public class UserSLOBean implements UserSLO {
+public class UserServiceBean implements UserService {
 
     private final UserValidator userValidator;
 

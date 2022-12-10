@@ -24,35 +24,35 @@ import pl.uginf.rcphrwebapp.hr.daysoff.dto.TimeOffRecord;
 import pl.uginf.rcphrwebapp.hr.invoice.InvoiceService;
 import pl.uginf.rcphrwebapp.hr.invoice.model.InvoiceInfoRecord;
 import pl.uginf.rcphrwebapp.hr.user.dto.UserDto;
-import pl.uginf.rcphrwebapp.hr.user.service.UserSLO;
+import pl.uginf.rcphrwebapp.hr.user.service.UserService;
 
 @RestController
 @AllArgsConstructor
 @RequestMapping("/user/{username}")
 public class UserController {
 
-    private final UserSLO userSLO;
+    private final UserService userService;
 
     private final InvoiceService invoiceService;
 
     @GetMapping
     public UserDto getUserByUsername(@PathVariable String username) {
-        return userSLO.getUserDtoByUsername(username);
+        return userService.getUserDtoByUsername(username);
     }
 
     @PutMapping(value = "/addDaysOff")
     public TimeOffRecord addTimeOff(@RequestBody NewTimeOffRecord newTimeOff) {
-        return userSLO.addDaysOffForUser(newTimeOff);
+        return userService.addDaysOffForUser(newTimeOff);
     }
 
     @GetMapping(value = "/getAllDaysOffBetween")
     public List<TimeOffRecord> getDaysOffAfter(@PathVariable String username, @RequestParam("fromDate") Date from, @RequestParam("toDate") Date to) {
-        return userSLO.getDaysOffForUserBetween(username, from, to);
+        return userService.getDaysOffForUserBetween(username, from, to);
     }
 
     @GetMapping(value = "/getNotApproved")
     public List<TimeOffRecord> getNotApprovedDaysOff(@PathVariable String username) {
-        return userSLO.getNotApprovedDaysOffForUser(username);
+        return userService.getNotApprovedDaysOffForUser(username);
     }
 
     @GetMapping(value = "/getInvoiceInfo")
