@@ -2,8 +2,8 @@ package pl.uginf.rcphrwebapp.hr.user.service;
 
 import static pl.uginf.rcphrwebapp.utils.MsgCodes.NOT_UNIQUE;
 
-import java.sql.Date;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -30,7 +30,6 @@ import pl.uginf.rcphrwebapp.hr.workinfo.WorkInfoDto;
 import pl.uginf.rcphrwebapp.hr.workinfo.WorkInfoRepository;
 import pl.uginf.rcphrwebapp.hr.workinfo.WorkInfoValidator;
 import pl.uginf.rcphrwebapp.rcp.worklog.WorkLogRepository;
-import pl.uginf.rcphrwebapp.rcp.worklog.model.WorkLog;
 
 @AllArgsConstructor(onConstructor_ = @Autowired)
 @Service
@@ -140,11 +139,6 @@ public class UserServiceBean implements UserService {
         return allNotApprovedForUser.stream()
                 .map(TimeOffAssembler::assemble)
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<WorkLog> getWorkLogsForUser(String username, Date from, Date to) {
-        return workLogRepository.findAllByBetweenFromAndToAndUserId(username, from, to);
     }
 
     @Override

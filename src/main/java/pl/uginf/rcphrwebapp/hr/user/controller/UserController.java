@@ -66,7 +66,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/generateInvoice")
-    public ResponseEntity<byte[]> generateResource(@PathVariable String username, @RequestParam("month-year") YearMonth yearMonth) throws IOException {
+    public ResponseEntity<byte[]> generateResource(@PathVariable String username, @RequestParam("year-month") YearMonth yearMonth) throws IOException {
         MultipartFile invoiceFile = invoiceService.generateInvoiceForUser(username, yearMonth);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);

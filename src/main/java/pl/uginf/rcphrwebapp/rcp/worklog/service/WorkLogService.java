@@ -4,6 +4,7 @@ import java.util.List;
 
 import pl.uginf.rcphrwebapp.rcp.worklog.dto.ApproveWorkLogRecord;
 import pl.uginf.rcphrwebapp.rcp.worklog.dto.CustomWorkLogRecord;
+import pl.uginf.rcphrwebapp.rcp.worklog.dto.NotApprovedWorkLogRecord;
 import pl.uginf.rcphrwebapp.rcp.worklog.dto.WorkLogBetween;
 import pl.uginf.rcphrwebapp.rcp.worklog.dto.WorkLogRecord;
 import pl.uginf.rcphrwebapp.rcp.worklog.dto.WorkLogStartRecord;
@@ -19,4 +20,6 @@ public interface WorkLogService {
     List<WorkLogRecord> getAllForUserBetween(WorkLogBetween workLogBetween);
 
     List<WorkLogRecord> approveRecord(List<ApproveWorkLogRecord> approveWorkLogRecordList);
+
+    List<NotApprovedWorkLogRecord> getNotApprovedRecord(String managerUsername);
 }

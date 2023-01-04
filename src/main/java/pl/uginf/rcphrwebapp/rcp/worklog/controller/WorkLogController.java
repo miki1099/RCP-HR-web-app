@@ -1,7 +1,9 @@
 package pl.uginf.rcphrwebapp.rcp.worklog.controller;
 
+import java.util.Date;
 import java.util.List;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.AllArgsConstructor;
 import pl.uginf.rcphrwebapp.rcp.worklog.dto.ApproveWorkLogRecord;
 import pl.uginf.rcphrwebapp.rcp.worklog.dto.CustomWorkLogRecord;
+import pl.uginf.rcphrwebapp.rcp.worklog.dto.NotApprovedWorkLogRecord;
 import pl.uginf.rcphrwebapp.rcp.worklog.dto.WorkLogBetween;
 import pl.uginf.rcphrwebapp.rcp.worklog.dto.WorkLogRecord;
 import pl.uginf.rcphrwebapp.rcp.worklog.dto.WorkLogStartRecord;
@@ -46,8 +49,14 @@ public class WorkLogController {
     }
 
     @GetMapping("/getWorkLogForUser")
-    public List<WorkLogRecord> getWorkLogList(@RequestBody WorkLogBetween workLogBetween) {
-        return workLogService.getAllForUserBetween(workLogBetween);
+    public List<WorkLogRecord> getWorkLogList(@RequestParam String username, @RequestParam("from") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") Date from,
+            @RequestParam("to") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") Date to) {
+        return workLogService.getAllForUserBetween(new WorkLogBetween(username, from, to));
+    }
+
+    @GetMapping(value = "/not-approved-work-log")
+    public List<NotApprovedWorkLogRecord> getNotApprovedWorkLog(@RequestParam String managerUsername) {
+        return workLogService.getNotApprovedRecord(managerUsername);
     }
 
 }

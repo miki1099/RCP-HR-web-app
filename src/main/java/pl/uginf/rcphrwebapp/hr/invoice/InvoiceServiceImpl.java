@@ -34,7 +34,10 @@ import pl.uginf.rcphrwebapp.hr.user.model.Address;
 import pl.uginf.rcphrwebapp.hr.user.model.User;
 import pl.uginf.rcphrwebapp.hr.user.service.UserService;
 import pl.uginf.rcphrwebapp.hr.workinfo.WorkInfoDto;
-import pl.uginf.rcphrwebapp.rcp.worklog.model.WorkLog;
+import pl.uginf.rcphrwebapp.rcp.worklog.dto.WorkLogBetween;
+import pl.uginf.rcphrwebapp.rcp.worklog.dto.WorkLogRecord;
+import pl.uginf.rcphrwebapp.rcp.worklog.service.WorkLogService;
+import pl.uginf.rcphrwebapp.utils.MsgCodes;
 
 @Service
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
@@ -50,6 +53,8 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     private final InvoiceGenerator invoiceGenerator;
 
+    private final WorkLogService workLogService;
+
     @Override
     public MultipartFile generateInvoiceForUser(String username, YearMonth monthForInvoice) {
         List<WorkInfoDto> workInfosBetween = getWorkInfosForMonth(username, monthForInvoice);
@@ -59,7 +64,7 @@ public class InvoiceServiceImpl implements InvoiceService {
                     "User %s for month %s does not have any work contract with hourly rate.".formatted(username, monthForInvoice.format(dateTimeFormatter)));
         }
 
-        List<WorkLog> workLogsForUser = getWorkLogsForMonth(username, monthForInvoice);
+        List<WorkLogRecord> workLogsForUser = getWorkLogsForMonth(username, monthForInvoice);
 
         InvoiceInfoRecord invoiceInfoRecord = getInvoiceInfoForUser(username);
         List<ServiceInfo> serviceInfos = createServiceInfo(workInfosBetween, workLogsForUser);
@@ -72,7 +77,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         User user = userService.getUserByUsername(username);
         InvoiceInfo invoiceInfo = user.getInvoiceInfo();
         if ( invoiceInfo == null ) {
-            return null;
+            throw new InvoiceGenerationException(MsgCodes.INVOICE_INFO_NOT_EXIST.getMsg());
         }
         AddressDto addressDto = modelMapper.map(invoiceInfo.getAddress(), AddressDto.class);
         return new InvoiceInfoRecord(invoiceInfo.getCompanyName(), invoiceInfo.getNip(), addressDto, invoiceInfo.getAccountNumber());
@@ -105,13 +110,13 @@ public class InvoiceServiceImpl implements InvoiceService {
                 .toList();
     }
 
-    private List<WorkLog> getWorkLogsForMonth(String username, YearMonth month) {
-        return userService.getWorkLogsForUser(username, Date.valueOf(month.atDay(1)), Date.valueOf(getFirstDayOfNextMonth(month)));
+    private List<WorkLogRecord> getWorkLogsForMonth(String username, YearMonth month) {
+        return workLogService.getAllForUserBetween(new WorkLogBetween(username, Date.valueOf(month.atDay(1)), Date.valueOf(getFirstDayOfNextMonth(month))));
     }
 
-    private List<ServiceInfo> createServiceInfo(List<WorkInfoDto> workInfos, List<WorkLog> workLogs) {
+    private List<ServiceInfo> createServiceInfo(List<WorkInfoDto> workInfos, List<WorkLogRecord> workLogs) {
         Map<WorkInfoDto, Double> hoursWorkedMap = new HashMap<>();
-        for (WorkLog workLog : workLogs) {
+        for (WorkLogRecord workLog : workLogs) {
             for (WorkInfoDto workInfo : workInfos) {
                 double workedHours = countWorkedHours(workLog, workInfo);
                 Double lastHoursWorked = hoursWorkedMap.get(workInfo);
@@ -136,9 +141,9 @@ public class InvoiceServiceImpl implements InvoiceService {
                 .collect(Collectors.toList());
     }
 
-    private double countWorkedHours(WorkLog workLog, WorkInfoDto workInfoDto) {
-        java.util.Date workLogFrom = workLog.getFrom();
-        java.util.Date workLogTo = workLog.getTo();
+    private double countWorkedHours(WorkLogRecord workLog, WorkInfoDto workInfoDto) {
+        java.util.Date workLogFrom = workLog.from();
+        java.util.Date workLogTo = workLog.to();
 
         Date workInfoFrom = workInfoDto.getFrom();
         Date workInfoTo = workInfoDto.getTo();

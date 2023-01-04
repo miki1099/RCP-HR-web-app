@@ -18,6 +18,7 @@ public enum MsgCodes {
     WORK_LOG_STARTED("There is active work for user {0}, please stop current work to start new one."),
     WORK_LOG_NOT_STARTED("There is not any started work for user {0}"),
     BEFORE_ERROR("{0} can not be before {1}"),
+    INVOICE_INFO_NOT_EXIST("User don't have information for invoice."),
     WRONG_FILE_EXTENSION("{0} is not a pdf file");
 
     private final String message;
