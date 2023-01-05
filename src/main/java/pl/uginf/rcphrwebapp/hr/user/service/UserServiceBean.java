@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import lombok.AllArgsConstructor;
+import pl.uginf.rcphrwebapp.exceptions.CredentialsNotMatchException;
 import pl.uginf.rcphrwebapp.exceptions.UserNotFoundException;
 import pl.uginf.rcphrwebapp.exceptions.ValidationException;
 import pl.uginf.rcphrwebapp.hr.daysoff.TimeOffRepository;
@@ -23,6 +24,7 @@ import pl.uginf.rcphrwebapp.hr.daysoff.model.DaysOff;
 import pl.uginf.rcphrwebapp.hr.daysoff.validator.TimeOffValidator;
 import pl.uginf.rcphrwebapp.hr.user.UserRepository;
 import pl.uginf.rcphrwebapp.hr.user.UserValidator;
+import pl.uginf.rcphrwebapp.hr.user.dto.LoginRecord;
 import pl.uginf.rcphrwebapp.hr.user.dto.UserDto;
 import pl.uginf.rcphrwebapp.hr.user.model.User;
 import pl.uginf.rcphrwebapp.hr.workinfo.WorkInfo;
@@ -167,6 +169,15 @@ public class UserServiceBean implements UserService {
         return allUsers.stream()
                 .map(user -> modelMapper.map(user, UserDto.class))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public UserDto loginUser(LoginRecord loginRecord) {
+        User user = getByUsername(loginRecord.username());
+        if (user.getPassword().equals(loginRecord.password())) {
+            return modelMapper.map(user, UserDto.class);
+        }
+        throw new CredentialsNotMatchException();
     }
 
     private User getByUsername(String username) {

@@ -5,6 +5,7 @@ import java.util.List;
 
 import pl.uginf.rcphrwebapp.hr.daysoff.dto.NewTimeOffRecord;
 import pl.uginf.rcphrwebapp.hr.daysoff.dto.TimeOffRecord;
+import pl.uginf.rcphrwebapp.hr.user.dto.LoginRecord;
 import pl.uginf.rcphrwebapp.hr.user.dto.UserDto;
 import pl.uginf.rcphrwebapp.hr.user.model.User;
 import pl.uginf.rcphrwebapp.hr.workinfo.WorkInfoDto;
@@ -34,4 +35,6 @@ public interface UserService {
     void approveDaysOff(List<Long> daysOffIdList);
 
     List<UserDto> getAllUsers();
+
+    UserDto loginUser(LoginRecord loginRecord);
 }
