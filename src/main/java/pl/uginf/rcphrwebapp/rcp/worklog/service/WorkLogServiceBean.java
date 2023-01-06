@@ -75,6 +75,7 @@ public class WorkLogServiceBean implements WorkLogService {
         WorkLog workLogStarted = getStartedWorkLogWithCustomExceptionMsg(username);
         workLogStarted.setTo(new Date());
         workLogStarted.setStatus(null);
+        workLogRepository.save(workLogStarted);
         return new WorkLogRecord(workLogStarted.getFrom(), workLogStarted.getTo(), workLogStarted.getComment(), workLogStarted.isApproved());
     }
 
