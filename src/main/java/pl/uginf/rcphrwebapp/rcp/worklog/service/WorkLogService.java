@@ -13,6 +13,8 @@ public interface WorkLogService {
 
     WorkLogStartRecord startWork(String username);
 
+    Boolean isStarted(String username);
+
     WorkLogRecord endWork(String username);
 
     WorkLogRecord addCustomWorkLog(CustomWorkLogRecord customWorkLog);

@@ -64,6 +64,11 @@ public class WorkLogServiceBean implements WorkLogService {
     }
 
     @Override
+    public Boolean isStarted(String username) {
+        return workLogRepository.findByStatusNotNullAndUser_Username(username).isPresent();
+    }
+
+    @Override
     @Transactional
     public WorkLogRecord endWork(String username) {
         userService.getUserByUsername(username);

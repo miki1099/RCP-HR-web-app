@@ -33,6 +33,11 @@ public class WorkLogController {
         return workLogService.startWork(username);
     }
 
+    @GetMapping("/isStarted")
+    public Boolean isStarted(@RequestParam String username) {
+        return workLogService.isStarted(username);
+    }
+
     @PostMapping("/endWorkLog")
     public WorkLogRecord endWorkLog(@RequestParam String username) {
         return workLogService.endWork(username);
