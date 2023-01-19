@@ -31,7 +31,6 @@ import pl.uginf.rcphrwebapp.hr.workinfo.WorkInfo;
 import pl.uginf.rcphrwebapp.hr.workinfo.WorkInfoDto;
 import pl.uginf.rcphrwebapp.hr.workinfo.WorkInfoRepository;
 import pl.uginf.rcphrwebapp.hr.workinfo.WorkInfoValidator;
-import pl.uginf.rcphrwebapp.rcp.worklog.WorkLogRepository;
 
 @AllArgsConstructor(onConstructor_ = @Autowired)
 @Service
@@ -50,8 +49,6 @@ public class UserServiceBean implements UserService {
     private final TimeOffRepository timeOffRepository;
 
     private final ModelMapper modelMapper;
-
-    private final WorkLogRepository workLogRepository;
 
     @Override
     public UserDto addUser(UserDto userDto) {
@@ -174,10 +171,16 @@ public class UserServiceBean implements UserService {
     @Override
     public UserDto loginUser(LoginRecord loginRecord) {
         User user = getByUsername(loginRecord.username());
-        if (user.getPassword().equals(loginRecord.password())) {
+        if (user.getPassword().equals(loginRecord.password()) && user.isActive()) {
             return modelMapper.map(user, UserDto.class);
         }
         throw new CredentialsNotMatchException();
+    }
+
+    @Override
+    public List<UserDto> getAllActiveUsers() {
+        List<UserDto> allUsers = getAllUsers();
+        return allUsers.stream().filter(UserDto::isActive).toList();
     }
 
     private User getByUsername(String username) {

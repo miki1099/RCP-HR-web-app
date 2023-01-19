@@ -37,4 +37,6 @@ public interface UserService {
     List<UserDto> getAllUsers();
 
     UserDto loginUser(LoginRecord loginRecord);
+
+    List<UserDto> getAllActiveUsers();
 }

@@ -27,6 +27,11 @@ public class HrController {
 
     DocumentService documentService;
 
+    @GetMapping("/getAllActive")
+    public List<UserDto> getAllActiveUsers() {
+        return userService.getAllActiveUsers();
+    }
+
     @PostMapping(value = "/deactivate-user")
     public void deactivateUser(@RequestParam("user") String username) {
         userService.deactivateUser(username);
