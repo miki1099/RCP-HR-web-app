@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -181,6 +183,13 @@ public class UserServiceBean implements UserService {
     public List<UserDto> getAllActiveUsers() {
         List<UserDto> allUsers = getAllUsers();
         return allUsers.stream().filter(UserDto::isActive).toList();
+    }
+
+    @Override
+    @Transactional
+    public boolean changePassword(String password, String username) {
+        userRepository.changePassword(password, username);
+        return true;
     }
 
     private User getByUsername(String username) {

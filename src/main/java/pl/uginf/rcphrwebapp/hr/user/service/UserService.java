@@ -38,5 +38,7 @@ public interface UserService {
 
     UserDto loginUser(LoginRecord loginRecord);
 
+    boolean changePassword(String password, String s);
+
     List<UserDto> getAllActiveUsers();
 }
