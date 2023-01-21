@@ -38,6 +38,11 @@ public class HrController {
         return userService.getAllManagers();
     }
 
+    @PostMapping("/addMangerForUser")
+    public void addManagerForUser(@RequestParam("username") String username, @RequestParam String managerUsername) {
+        userService.addManagerForUser(username, managerUsername);
+    }
+
     @PostMapping(value = "/deactivate-user")
     public void deactivateUser(@RequestParam("user") String username) {
         userService.deactivateUser(username);

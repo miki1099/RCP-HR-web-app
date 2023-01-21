@@ -44,4 +44,6 @@ public interface UserService {
     List<UserDto> getAllActiveUsers();
 
     List<BasicUserRecord> getAllManagers();
+
+    void addManagerForUser(String username, String managerUsername);
 }

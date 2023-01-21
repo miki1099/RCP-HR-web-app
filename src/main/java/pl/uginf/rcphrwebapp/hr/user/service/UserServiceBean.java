@@ -196,6 +196,14 @@ public class UserServiceBean implements UserService {
     }
 
     @Override
+    public void addManagerForUser(String username, String managerUsername) {
+        User user = getUserByUsername(username);
+        User manager = getUserByUsername(managerUsername);
+        user.setBoss(manager);
+        userRepository.save(user);
+    }
+
+    @Override
     @Transactional
     public boolean changePassword(String password, String username) {
         userRepository.changePassword(password, username);
