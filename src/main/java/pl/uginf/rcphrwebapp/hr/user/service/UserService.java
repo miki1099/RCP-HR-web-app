@@ -5,6 +5,7 @@ import java.util.List;
 
 import pl.uginf.rcphrwebapp.hr.daysoff.dto.NewTimeOffRecord;
 import pl.uginf.rcphrwebapp.hr.daysoff.dto.TimeOffRecord;
+import pl.uginf.rcphrwebapp.hr.user.dto.BasicUserRecord;
 import pl.uginf.rcphrwebapp.hr.user.dto.LoginRecord;
 import pl.uginf.rcphrwebapp.hr.user.dto.UserDto;
 import pl.uginf.rcphrwebapp.hr.user.model.User;
@@ -41,4 +42,6 @@ public interface UserService {
     boolean changePassword(String password, String s);
 
     List<UserDto> getAllActiveUsers();
+
+    List<BasicUserRecord> getAllManagers();
 }

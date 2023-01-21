@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import lombok.AllArgsConstructor;
 import pl.uginf.rcphrwebapp.hr.document.dto.DocumentDTO;
 import pl.uginf.rcphrwebapp.hr.document.service.DocumentService;
+import pl.uginf.rcphrwebapp.hr.user.dto.BasicUserRecord;
 import pl.uginf.rcphrwebapp.hr.user.dto.UserDto;
 import pl.uginf.rcphrwebapp.hr.user.service.UserService;
 import pl.uginf.rcphrwebapp.hr.workinfo.WorkInfoDto;
@@ -30,6 +31,11 @@ public class HrController {
     @GetMapping("/getAllActive")
     public List<UserDto> getAllActiveUsers() {
         return userService.getAllActiveUsers();
+    }
+
+    @GetMapping("/getAllManagers")
+    public List<BasicUserRecord> getAllManagers() {
+        return userService.getAllManagers();
     }
 
     @PostMapping(value = "/deactivate-user")

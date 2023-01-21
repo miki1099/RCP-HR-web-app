@@ -1,5 +1,6 @@
 package pl.uginf.rcphrwebapp.hr.user;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -8,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import pl.uginf.rcphrwebapp.hr.user.model.RoleEnum;
 import pl.uginf.rcphrwebapp.hr.user.model.User;
 
 @Repository
@@ -22,6 +24,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findUserByUsername(String username);
 
     Optional<User> findAllByBoss_Username(String username);
+
+    List<User> findByRoles_NameAndIsActiveTrue(RoleEnum name);
 
     @Modifying
     @Query("update User u set u.password = :password where u.username = :username")

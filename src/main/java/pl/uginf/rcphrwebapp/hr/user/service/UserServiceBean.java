@@ -26,8 +26,10 @@ import pl.uginf.rcphrwebapp.hr.daysoff.model.DaysOff;
 import pl.uginf.rcphrwebapp.hr.daysoff.validator.TimeOffValidator;
 import pl.uginf.rcphrwebapp.hr.user.UserRepository;
 import pl.uginf.rcphrwebapp.hr.user.UserValidator;
+import pl.uginf.rcphrwebapp.hr.user.dto.BasicUserRecord;
 import pl.uginf.rcphrwebapp.hr.user.dto.LoginRecord;
 import pl.uginf.rcphrwebapp.hr.user.dto.UserDto;
+import pl.uginf.rcphrwebapp.hr.user.model.RoleEnum;
 import pl.uginf.rcphrwebapp.hr.user.model.User;
 import pl.uginf.rcphrwebapp.hr.workinfo.WorkInfo;
 import pl.uginf.rcphrwebapp.hr.workinfo.WorkInfoDto;
@@ -183,6 +185,14 @@ public class UserServiceBean implements UserService {
     public List<UserDto> getAllActiveUsers() {
         List<UserDto> allUsers = getAllUsers();
         return allUsers.stream().filter(UserDto::isActive).toList();
+    }
+
+    @Override
+    public List<BasicUserRecord> getAllManagers() {
+        return userRepository.findByRoles_NameAndIsActiveTrue(RoleEnum.MANAGER)
+                .stream()
+                .map(user -> new BasicUserRecord(user.getUsername(), user.getFirstName(), user.getLastName()))
+                .toList();
     }
 
     @Override
