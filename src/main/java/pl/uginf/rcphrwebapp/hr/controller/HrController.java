@@ -2,6 +2,7 @@ package pl.uginf.rcphrwebapp.hr.controller;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.AllArgsConstructor;
+import pl.uginf.rcphrwebapp.hr.benefits.Benefit;
+import pl.uginf.rcphrwebapp.hr.benefits.BenefitRecord;
+import pl.uginf.rcphrwebapp.hr.benefits.BenefitRepository;
 import pl.uginf.rcphrwebapp.hr.document.dto.DocumentDTO;
 import pl.uginf.rcphrwebapp.hr.document.service.DocumentService;
 import pl.uginf.rcphrwebapp.hr.user.dto.BasicUserRecord;
@@ -25,9 +29,11 @@ import pl.uginf.rcphrwebapp.hr.workinfo.WorkInfoDto;
 @RequestMapping("/hr/user")
 public class HrController {
 
-    UserService userService;
+    private final UserService userService;
 
-    DocumentService documentService;
+    private final DocumentService documentService;
+
+    private final BenefitRepository benefitRepository;
 
     @GetMapping("/getAllActive")
     public List<UserDto> getAllActiveUsers() {
@@ -90,6 +96,22 @@ public class HrController {
     @GetMapping("/getFile/{username}")
     public List<String> getFileForUser(@PathVariable String username) {
         return documentService.getAllFilenameForUser(username);
+    }
+
+    @PutMapping("/createBenefit")
+    public void createBenefit(@RequestBody BenefitRecord benefitRecord) {
+        Benefit benefit = new Benefit();
+        benefit.setDetails(benefitRecord.details());
+        benefit.setMonthlyCost(benefitRecord.monthlyCost());
+        benefitRepository.save(benefit);
+    }
+
+    @GetMapping("/getAllBenefits")
+    public List<BenefitRecord> getAllBenefits() {
+        return benefitRepository.findAll()
+                .stream()
+                .map(benefit -> new BenefitRecord(benefit.getId(), benefit.getDetails(), benefit.getMonthlyCost()))
+                .collect(Collectors.toList());
     }
 
 }

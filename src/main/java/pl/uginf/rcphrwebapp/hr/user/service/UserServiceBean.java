@@ -2,10 +2,7 @@ package pl.uginf.rcphrwebapp.hr.user.service;
 
 import static pl.uginf.rcphrwebapp.utils.MsgCodes.NOT_UNIQUE;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -18,6 +15,9 @@ import lombok.AllArgsConstructor;
 import pl.uginf.rcphrwebapp.exceptions.CredentialsNotMatchException;
 import pl.uginf.rcphrwebapp.exceptions.UserNotFoundException;
 import pl.uginf.rcphrwebapp.exceptions.ValidationException;
+import pl.uginf.rcphrwebapp.hr.benefits.Benefit;
+import pl.uginf.rcphrwebapp.hr.benefits.BenefitRecord;
+import pl.uginf.rcphrwebapp.hr.benefits.BenefitRepository;
 import pl.uginf.rcphrwebapp.hr.daysoff.TimeOffRepository;
 import pl.uginf.rcphrwebapp.hr.daysoff.dto.NewTimeOffRecord;
 import pl.uginf.rcphrwebapp.hr.daysoff.dto.TimeOffRecord;
@@ -50,6 +50,8 @@ public class UserServiceBean implements UserService {
     private final WorkInfoRepository workInfoRepository;
 
     private final TimeOffRepository timeOffRepository;
+
+    private final BenefitRepository benefitRepository;
 
     private final ModelMapper modelMapper;
 
@@ -219,6 +221,32 @@ public class UserServiceBean implements UserService {
         dbAddress.setHomeNumber(address.getHomeNumber());
         dbAddress.setPostalCode(address.getPostalCode());
         userRepository.save(userToEdit);
+    }
+
+    @Override
+    public List<BenefitRecord> getBenefitsForUser(String username) {
+        User user = getByUsername(username);
+        return user.getBenefits()
+                .stream()
+                .map(benefit -> new BenefitRecord(benefit.getId(), benefit.getDetails(), benefit.getMonthlyCost()))
+                .toList();
+    }
+
+    @Override
+    public void addBenefitsForUser(String username, List<Long> benefitIds) {
+        User user = getUserByUsername(username);
+        List<Benefit> benefits = benefitRepository.findByIdIn(benefitIds);
+        user.getBenefits().addAll(benefits);
+        userRepository.save(user);
+    }
+
+    @Override
+    public void removeBenefitsFromUser(String username, Long id) {
+        User user = getUserByUsername(username);
+        Set<Benefit> benefits = user.getBenefits();
+        Set<Benefit> filteredBenefits = benefits.stream().filter(benefit -> !Objects.equals(benefit.getId(), id)).collect(Collectors.toSet());
+        user.setBenefits(filteredBenefits);
+        userRepository.save(user);
     }
 
     @Override

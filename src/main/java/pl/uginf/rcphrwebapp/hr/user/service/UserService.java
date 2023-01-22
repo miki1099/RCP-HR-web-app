@@ -3,6 +3,7 @@ package pl.uginf.rcphrwebapp.hr.user.service;
 import java.util.Date;
 import java.util.List;
 
+import pl.uginf.rcphrwebapp.hr.benefits.BenefitRecord;
 import pl.uginf.rcphrwebapp.hr.daysoff.dto.NewTimeOffRecord;
 import pl.uginf.rcphrwebapp.hr.daysoff.dto.TimeOffRecord;
 import pl.uginf.rcphrwebapp.hr.user.dto.BasicUserRecord;
@@ -49,4 +50,10 @@ public interface UserService {
     void addManagerForUser(String username, String managerUsername);
 
     void updateUser(UserUpdateDto userUpdateDto);
+
+    List<BenefitRecord> getBenefitsForUser(String username);
+
+    void addBenefitsForUser(String username, List<Long> benefitIds);
+
+    void removeBenefitsFromUser(String username, Long id);
 }

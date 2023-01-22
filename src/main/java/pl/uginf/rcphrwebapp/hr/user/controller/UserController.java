@@ -9,18 +9,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.AllArgsConstructor;
+import pl.uginf.rcphrwebapp.hr.benefits.BenefitIdsRequest;
+import pl.uginf.rcphrwebapp.hr.benefits.BenefitRecord;
 import pl.uginf.rcphrwebapp.hr.daysoff.dto.NewTimeOffRecord;
 import pl.uginf.rcphrwebapp.hr.daysoff.dto.TimeOffRecord;
 import pl.uginf.rcphrwebapp.hr.invoice.InvoiceService;
@@ -81,6 +75,21 @@ public class UserController {
         String filename = invoiceFile.getName();
         headers.setContentDispositionFormData(filename, filename);
         return new ResponseEntity<>(invoiceFile.getBytes(), headers, HttpStatus.CREATED);
+    }
+
+    @PostMapping(value = "/addBenefits")
+    public void addBenefits(@PathVariable String username, @RequestBody BenefitIdsRequest benefitIdsRequest) {
+        userService.addBenefitsForUser(username, benefitIdsRequest.ids());
+    }
+
+    @GetMapping(value = "/getBenefits")
+    public List<BenefitRecord> getBenefits(@PathVariable String username) {
+        return userService.getBenefitsForUser(username);
+    }
+
+    @PostMapping(value = "/removeBenefit")
+    public void removeBenefit(@PathVariable String username, @RequestParam("benefitId") Long id) {
+        userService.removeBenefitsFromUser(username, id);
     }
 
 }
