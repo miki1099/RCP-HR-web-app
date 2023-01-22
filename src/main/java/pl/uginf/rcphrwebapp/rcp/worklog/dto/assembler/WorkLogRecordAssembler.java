@@ -9,7 +9,7 @@ import pl.uginf.rcphrwebapp.rcp.worklog.model.WorkLog;
 public class WorkLogRecordAssembler {
 
     public static WorkLogRecord assembleRecord(WorkLog workLog) {
-        return new WorkLogRecord(workLog.getFrom(), workLog.getTo(), workLog.getComment(), workLog.isApproved());
+        return new WorkLogRecord(workLog.getId(), workLog.getFrom(), workLog.getTo(), workLog.getComment(), workLog.isApproved());
     }
 
     public static List<WorkLogRecord> assembleMultipleRecord(List<WorkLog> workLogList) {

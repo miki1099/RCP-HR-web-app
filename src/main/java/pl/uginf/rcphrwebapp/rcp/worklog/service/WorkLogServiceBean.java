@@ -24,7 +24,6 @@ import pl.uginf.rcphrwebapp.hr.user.model.User;
 import pl.uginf.rcphrwebapp.hr.user.service.UserService;
 import pl.uginf.rcphrwebapp.rcp.worklog.WorkLogRepository;
 import pl.uginf.rcphrwebapp.rcp.worklog.WorkLogValidator;
-import pl.uginf.rcphrwebapp.rcp.worklog.dto.ApproveWorkLogRecord;
 import pl.uginf.rcphrwebapp.rcp.worklog.dto.CustomWorkLogRecord;
 import pl.uginf.rcphrwebapp.rcp.worklog.dto.NotApprovedWorkLogRecord;
 import pl.uginf.rcphrwebapp.rcp.worklog.dto.WorkLogBetween;
@@ -65,7 +64,8 @@ public class WorkLogServiceBean implements WorkLogService {
 
     @Override
     public Boolean isStarted(String username) {
-        return workLogRepository.findByStatusNotNullAndUser_Username(username).isPresent();
+        return workLogRepository.findByStatusNotNullAndUser_Username(username)
+                .isPresent();
     }
 
     @Override
@@ -76,7 +76,8 @@ public class WorkLogServiceBean implements WorkLogService {
         workLogStarted.setTo(new Date());
         workLogStarted.setStatus(null);
         workLogRepository.save(workLogStarted);
-        return new WorkLogRecord(workLogStarted.getFrom(), workLogStarted.getTo(), workLogStarted.getComment(), workLogStarted.isApproved());
+        return new WorkLogRecord(workLogStarted.getId(), workLogStarted.getFrom(), workLogStarted.getTo(), workLogStarted.getComment(),
+                workLogStarted.isApproved());
     }
 
     @Override
@@ -103,17 +104,13 @@ public class WorkLogServiceBean implements WorkLogService {
 
     @Override
     @Transactional
-    public List<WorkLogRecord> approveRecord(List<ApproveWorkLogRecord> approveWorkLogRecordList) {
-        List<WorkLogRecord> workLogRecordList = new ArrayList<>();
-        for (ApproveWorkLogRecord approveWorkLogRecord : approveWorkLogRecordList) {
-            long workLogId = approveWorkLogRecord.workLogId();
+    public void approveRecord(List<Long> workLogsId) {
+        for (Long workLogId : workLogsId) {
             WorkLog workLog = workLogRepository.findById(workLogId)
                     .orElseThrow(() -> new NotFoundException("WorkLog with id " + workLogId));
             workLog.setApproved(true);
             workLogRepository.save(workLog);
-            workLogRecordList.add(assembleRecord(workLog));
         }
-        return workLogRecordList;
     }
 
     public List<NotApprovedWorkLogRecord> getNotApprovedRecord(String managerUsername) {

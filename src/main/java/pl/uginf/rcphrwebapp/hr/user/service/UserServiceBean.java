@@ -147,8 +147,9 @@ public class UserServiceBean implements UserService {
 
     @Override
     public List<UserDto> getAllTeamMembers(String managerUsername) {
-        Optional<User> userList = userRepository.findAllByBoss_Username(managerUsername);
-        if ( userList.isPresent() )
+        Optional<User> boss = userRepository.findUserByUsername(managerUsername);
+        List<User> userList = userRepository.findAllByBoss(boss.get());
+        if ( !userList.isEmpty() )
             return userList.stream()
                     .map(user -> modelMapper.map(user, UserDto.class))
                     .collect(Collectors.toList());
@@ -176,7 +177,8 @@ public class UserServiceBean implements UserService {
     @Override
     public UserDto loginUser(LoginRecord loginRecord) {
         User user = getByUsername(loginRecord.username());
-        if (user.getPassword().equals(loginRecord.password()) && user.isActive()) {
+        if ( user.getPassword()
+                .equals(loginRecord.password()) && user.isActive() ) {
             return modelMapper.map(user, UserDto.class);
         }
         throw new CredentialsNotMatchException();
@@ -185,7 +187,9 @@ public class UserServiceBean implements UserService {
     @Override
     public List<UserDto> getAllActiveUsers() {
         List<UserDto> allUsers = getAllUsers();
-        return allUsers.stream().filter(UserDto::isActive).toList();
+        return allUsers.stream()
+                .filter(UserDto::isActive)
+                .toList();
     }
 
     @Override
@@ -257,7 +261,9 @@ public class UserServiceBean implements UserService {
     }
 
     private User getByUsername(String username) {
+        System.out.println("wtf");
         Optional<User> userDB = userRepository.findUserByUsername(username);
+        System.out.println("wtf");
         return userDB.orElseThrow(() -> new UserNotFoundException(username));
     }
 
