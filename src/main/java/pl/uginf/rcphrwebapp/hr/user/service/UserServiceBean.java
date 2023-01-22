@@ -237,19 +237,10 @@ public class UserServiceBean implements UserService {
     }
 
     @Override
-    public void addBenefitsForUser(String username, List<Long> benefitIds) {
+    public void updateBenefits(String username, List<Long> id) {
         User user = getUserByUsername(username);
-        List<Benefit> benefits = benefitRepository.findByIdIn(benefitIds);
-        user.getBenefits().addAll(benefits);
-        userRepository.save(user);
-    }
-
-    @Override
-    public void removeBenefitsFromUser(String username, Long id) {
-        User user = getUserByUsername(username);
-        Set<Benefit> benefits = user.getBenefits();
-        Set<Benefit> filteredBenefits = benefits.stream().filter(benefit -> !Objects.equals(benefit.getId(), id)).collect(Collectors.toSet());
-        user.setBenefits(filteredBenefits);
+        List<Benefit> benefits = benefitRepository.findByIdIn(id);
+        user.setBenefits(new HashSet<>(benefits));
         userRepository.save(user);
     }
 

@@ -77,19 +77,14 @@ public class UserController {
         return new ResponseEntity<>(invoiceFile.getBytes(), headers, HttpStatus.CREATED);
     }
 
-    @PostMapping(value = "/addBenefits")
-    public void addBenefits(@PathVariable String username, @RequestBody BenefitIdsRequest benefitIdsRequest) {
-        userService.addBenefitsForUser(username, benefitIdsRequest.ids());
-    }
-
     @GetMapping(value = "/getBenefits")
     public List<BenefitRecord> getBenefits(@PathVariable String username) {
         return userService.getBenefitsForUser(username);
     }
 
-    @PostMapping(value = "/removeBenefit")
-    public void removeBenefit(@PathVariable String username, @RequestParam("benefitId") Long id) {
-        userService.removeBenefitsFromUser(username, id);
+    @PostMapping(value = "/updateBenefits")
+    public void removeBenefit(@PathVariable String username, @RequestBody BenefitIdsRequest benefitIdsRequest) {
+        userService.updateBenefits(username, benefitIdsRequest.ids());
     }
 
 }

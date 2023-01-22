@@ -53,7 +53,5 @@ public interface UserService {
 
     List<BenefitRecord> getBenefitsForUser(String username);
 
-    void addBenefitsForUser(String username, List<Long> benefitIds);
-
-    void removeBenefitsFromUser(String username, Long id);
+    void updateBenefits(String username, List<Long> ids);
 }
