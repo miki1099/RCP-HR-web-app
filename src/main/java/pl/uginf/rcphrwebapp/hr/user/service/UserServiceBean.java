@@ -26,9 +26,8 @@ import pl.uginf.rcphrwebapp.hr.daysoff.model.DaysOff;
 import pl.uginf.rcphrwebapp.hr.daysoff.validator.TimeOffValidator;
 import pl.uginf.rcphrwebapp.hr.user.UserRepository;
 import pl.uginf.rcphrwebapp.hr.user.UserValidator;
-import pl.uginf.rcphrwebapp.hr.user.dto.BasicUserRecord;
-import pl.uginf.rcphrwebapp.hr.user.dto.LoginRecord;
-import pl.uginf.rcphrwebapp.hr.user.dto.UserDto;
+import pl.uginf.rcphrwebapp.hr.user.dto.*;
+import pl.uginf.rcphrwebapp.hr.user.model.Address;
 import pl.uginf.rcphrwebapp.hr.user.model.RoleEnum;
 import pl.uginf.rcphrwebapp.hr.user.model.User;
 import pl.uginf.rcphrwebapp.hr.workinfo.WorkInfo;
@@ -201,6 +200,25 @@ public class UserServiceBean implements UserService {
         User manager = getUserByUsername(managerUsername);
         user.setBoss(manager);
         userRepository.save(user);
+    }
+
+    @Override
+    public void updateUser(UserUpdateDto userUpdateDto) {
+        User userToEdit = getByUsername(userUpdateDto.getUsername());
+        userToEdit.setPassword(userUpdateDto.getPassword());
+        userToEdit.setEmail(userUpdateDto.getEmail());
+        userToEdit.setFirstName(userUpdateDto.getFirstName());
+        userToEdit.setLastName(userUpdateDto.getLastName());
+        userToEdit.setPhone(userUpdateDto.getPhone());
+        userToEdit.setRoles(userUpdateDto.getRoles());
+        AddressDto address = userUpdateDto.getAddress();
+        Address dbAddress = userToEdit.getAddress();
+        dbAddress.setCity(address.getCity());
+        dbAddress.setCountry(address.getCountry());
+        dbAddress.setStreet(address.getStreet());
+        dbAddress.setHomeNumber(address.getHomeNumber());
+        dbAddress.setPostalCode(address.getPostalCode());
+        userRepository.save(userToEdit);
     }
 
     @Override

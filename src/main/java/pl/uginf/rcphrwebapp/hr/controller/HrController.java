@@ -15,6 +15,7 @@ import pl.uginf.rcphrwebapp.hr.document.dto.DocumentDTO;
 import pl.uginf.rcphrwebapp.hr.document.service.DocumentService;
 import pl.uginf.rcphrwebapp.hr.user.dto.BasicUserRecord;
 import pl.uginf.rcphrwebapp.hr.user.dto.UserDto;
+import pl.uginf.rcphrwebapp.hr.user.dto.UserUpdateDto;
 import pl.uginf.rcphrwebapp.hr.user.service.UserService;
 import pl.uginf.rcphrwebapp.hr.workinfo.WorkInfoDto;
 
@@ -51,6 +52,11 @@ public class HrController {
     @PutMapping(value = "/create-user")
     public UserDto createUser(@RequestBody UserDto user) {
         return userService.addUser(user);
+    }
+
+    @PostMapping("/updateUser")
+    public void updateUser(@RequestBody UserUpdateDto userUpdateDto) {
+        userService.updateUser(userUpdateDto);
     }
 
     @PostMapping(value = "/add-work-info")

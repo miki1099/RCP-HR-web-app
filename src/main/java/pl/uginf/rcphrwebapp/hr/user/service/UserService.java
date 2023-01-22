@@ -8,6 +8,7 @@ import pl.uginf.rcphrwebapp.hr.daysoff.dto.TimeOffRecord;
 import pl.uginf.rcphrwebapp.hr.user.dto.BasicUserRecord;
 import pl.uginf.rcphrwebapp.hr.user.dto.LoginRecord;
 import pl.uginf.rcphrwebapp.hr.user.dto.UserDto;
+import pl.uginf.rcphrwebapp.hr.user.dto.UserUpdateDto;
 import pl.uginf.rcphrwebapp.hr.user.model.User;
 import pl.uginf.rcphrwebapp.hr.workinfo.WorkInfoDto;
 
@@ -46,4 +47,6 @@ public interface UserService {
     List<BasicUserRecord> getAllManagers();
 
     void addManagerForUser(String username, String managerUsername);
+
+    void updateUser(UserUpdateDto userUpdateDto);
 }
