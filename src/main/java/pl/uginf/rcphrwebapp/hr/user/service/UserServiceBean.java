@@ -79,7 +79,7 @@ public class UserServiceBean implements UserService {
         checkUserExistence(username);
         List<WorkInfo> allByUserId_username = workInfoRepository.findAllByUserId_Username(username);
 
-        return allByUserId_username.stream()
+        return allByUserId_username.stream().sorted(Comparator.comparing(WorkInfo::getTo).reversed())
                 .map(workInfo -> {
                     WorkInfoDto workInfoDto = modelMapper.map(workInfo, WorkInfoDto.class);
                     workInfoDto.setUsername(workInfo.getUserId()
