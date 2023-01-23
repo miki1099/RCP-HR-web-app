@@ -151,7 +151,8 @@ public class InvoiceServiceImpl implements InvoiceService {
         if ( workLogTo == null ) {
             return 0;
         }
-        return getHoursBetweenForSecondDate(workInfoFrom, workInfoTo, workLogFrom, workLogTo);
+        double hoursBetweenForSecondDate = getHoursBetweenForSecondDate(workInfoFrom, workInfoTo, workLogFrom, workLogTo);
+        return hoursBetweenForSecondDate < 0 ? 0 : hoursBetweenForSecondDate;
     }
 
 }
