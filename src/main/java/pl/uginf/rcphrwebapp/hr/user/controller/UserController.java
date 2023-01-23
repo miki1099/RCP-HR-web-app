@@ -21,6 +21,8 @@ import pl.uginf.rcphrwebapp.hr.invoice.InvoiceService;
 import pl.uginf.rcphrwebapp.hr.invoice.model.InvoiceInfoRecord;
 import pl.uginf.rcphrwebapp.hr.user.dto.UserDto;
 import pl.uginf.rcphrwebapp.hr.user.service.UserService;
+import pl.uginf.rcphrwebapp.hr.user.summary.SummaryService;
+import pl.uginf.rcphrwebapp.hr.user.summary.dto.CostSummaryRecord;
 
 @CrossOrigin(origins = "http://localhost:8081")
 @RestController
@@ -31,6 +33,8 @@ public class UserController {
     private final UserService userService;
 
     private final InvoiceService invoiceService;
+
+    private final SummaryService summaryService;
 
     @GetMapping
     public UserDto getUserByUsername(@PathVariable String username) {
@@ -85,6 +89,11 @@ public class UserController {
     @PostMapping(value = "/updateBenefits")
     public void removeBenefit(@PathVariable String username, @RequestBody BenefitIdsRequest benefitIdsRequest) {
         userService.updateBenefits(username, benefitIdsRequest.ids());
+    }
+
+    @GetMapping(value = "/getPaymentSummary")
+    public CostSummaryRecord getPaymentSummary(@PathVariable String username, @RequestParam("yearMonth") YearMonth yearMonth) {
+        return summaryService.getSummaryForMonth(username, yearMonth);
     }
 
 }

@@ -252,9 +252,7 @@ public class UserServiceBean implements UserService {
     }
 
     private User getByUsername(String username) {
-        System.out.println("wtf");
         Optional<User> userDB = userRepository.findUserByUsername(username);
-        System.out.println("wtf");
         return userDB.orElseThrow(() -> new UserNotFoundException(username));
     }
 
