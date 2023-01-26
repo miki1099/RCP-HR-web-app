@@ -57,8 +57,8 @@ public class WorkLogController {
     }
 
     @GetMapping("/getWorkLogForUser")
-    public List<WorkLogRecord> getWorkLogList(@RequestParam String username, @RequestParam("from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date from,
-            @RequestParam("to") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date to) {
+    public List<WorkLogRecord> getWorkLogList(@RequestParam String username, @RequestParam("from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date from,
+            @RequestParam("to") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date to) {
         return workLogService.getAllForUserBetween(new WorkLogBetween(username, from, to));
     }
 
